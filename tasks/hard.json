@@ -13,6 +13,7 @@
     {
       "id": "H001",
       "category_hint": "billing",
+      "specialist_team": "account_access",
       "description": "Users can no longer access API Service; the account appears suspended after sign-in on Safari for Linux.",
       "urgency": 5,
       "customer_tier": "premium",
@@ -27,6 +28,7 @@
     {
       "id": "H002",
       "category_hint": "general",
+      "specialist_team": "refunds",
       "description": "I need a refund for the recent Billing System charge on my PayPal statement.",
       "urgency": 5,
       "customer_tier": "premium",
@@ -41,6 +43,7 @@
     {
       "id": "H003",
       "category_hint": "technical",
+      "specialist_team": "sales_ops",
       "description": "Does API Service support scheduled summary exports for individual teams, or is that only available on another plan?",
       "urgency": 1,
       "customer_tier": "free",
@@ -55,6 +58,7 @@
     {
       "id": "H004",
       "category_hint": "general",
+      "specialist_team": "security",
       "description": "Two-factor authentication codes are not arriving, so the team cannot complete sign-in to Payment Gateway.",
       "urgency": 5,
       "customer_tier": "free",
@@ -69,6 +73,7 @@
     {
       "id": "H005",
       "category_hint": "billing",
+      "specialist_team": "payments_ops",
       "description": "My payment for API Service looks wrong, but I am not sure which invoice or workspace is affected yet. It was billed through PayPal.",
       "urgency": 3,
       "customer_tier": "premium",
@@ -83,6 +88,7 @@
     {
       "id": "H006",
       "category_hint": "technical",
+      "specialist_team": "account_access",
       "description": "Users can no longer access Analytics Dashboard; the account appears suspended after sign-in on Firefox for MacOS.",
       "urgency": 3,
       "customer_tier": "premium",
@@ -97,6 +103,7 @@
     {
       "id": "H007",
       "category_hint": "general",
+      "specialist_team": "sales_ops",
       "description": "Does Mobile App support scheduled summary exports for small business teams, or is that only available on another plan?",
       "urgency": 1,
       "customer_tier": "premium",
@@ -111,6 +118,7 @@
     {
       "id": "H008",
       "category_hint": "billing",
+      "specialist_team": "subscription_ops",
       "description": "My basic subscription for Analytics Dashboard was cancelled unexpectedly and I need clarification.",
       "urgency": 3,
       "customer_tier": "free",
@@ -125,6 +133,7 @@
     {
       "id": "H009",
       "category_hint": "technical",
+      "specialist_team": "payments_ops",
       "description": "The payment for E-commerce Store through Credit Card was deducted, but the transaction still shows failed and access is blocked.",
       "urgency": 4,
       "customer_tier": "free",
@@ -139,6 +148,7 @@
     {
       "id": "H010",
       "category_hint": "general",
+      "specialist_team": "platform_reliability",
       "description": "Web Portal feels very slow in Europe, but I do not know yet if it is specific to Edge on Linux.",
       "urgency": 3,
       "customer_tier": "free",
@@ -158,6 +168,7 @@
         {
           "id": "H011",
           "category_hint": "general",
+          "specialist_team": "security",
           "description": "Two-factor authentication codes are not arriving, so the team cannot complete sign-in to Payment Gateway.",
           "urgency": 5,
           "customer_tier": "free",
@@ -172,6 +183,7 @@
         {
           "id": "H012",
           "category_hint": "billing",
+          "specialist_team": "sales_ops",
           "description": "Does E-commerce Store support scheduled summary exports for corporate teams, or is that only available on another plan?",
           "urgency": 1,
           "customer_tier": "free",
@@ -191,6 +203,7 @@
         {
           "id": "H013",
           "category_hint": "technical",
+          "specialist_team": "refunds",
           "description": "I need a refund for the recent Subscription Service charge on my Credit Card statement.",
           "urgency": 5,
           "customer_tier": "free",
@@ -205,6 +218,7 @@
         {
           "id": "H014",
           "category_hint": "general",
+          "specialist_team": "account_access",
           "description": "Users can no longer access Web Portal; the account appears suspended after sign-in on Firefox for Windows.",
           "urgency": 4,
           "customer_tier": "free",
@@ -224,6 +238,7 @@
         {
           "id": "H015",
           "category_hint": "billing",
+          "specialist_team": "security",
           "description": "Two-factor authentication codes are not arriving, so the team cannot complete sign-in to Billing System.",
           "urgency": 5,
           "customer_tier": "free",
@@ -238,6 +253,7 @@
         {
           "id": "H016",
           "category_hint": "general",
+          "specialist_team": "subscription_ops",
           "description": "My free subscription for Analytics Dashboard was cancelled unexpectedly and I need clarification.",
           "urgency": 2,
           "customer_tier": "free",
@@ -257,6 +273,7 @@
         {
           "id": "H017",
           "category_hint": "billing",
+          "specialist_team": "platform_reliability",
           "description": "Billing System feels very slow in Asia, but I do not know yet if it is specific to Edge on MacOS.",
           "urgency": 3,
           "customer_tier": "premium",
@@ -271,6 +288,7 @@
         {
           "id": "H018",
           "category_hint": "general",
+          "specialist_team": "payments_ops",
           "description": "My payment for Payment Gateway looks wrong, but I am not sure which invoice or workspace is affected yet. It was billed through Credit Card.",
           "urgency": 3,
           "customer_tier": "free",
@@ -290,6 +308,7 @@
         {
           "id": "H019",
           "category_hint": "general",
+          "specialist_team": "security",
           "description": "Two-factor authentication codes are not arriving, so the team cannot complete sign-in to CRM Platform.",
           "urgency": 4,
           "customer_tier": "premium",
@@ -304,6 +323,7 @@
         {
           "id": "H020",
           "category_hint": "technical",
+          "specialist_team": "payments_ops",
           "description": "The payment for API Service through PayPal was deducted, but the transaction still shows failed and access is blocked.",
           "urgency": 5,
           "customer_tier": "free",
@@ -323,6 +343,7 @@
         {
           "id": "H021",
           "category_hint": "technical",
+          "specialist_team": "sales_ops",
           "description": "Does Subscription Service support scheduled summary exports for individual teams, or is that only available on another plan?",
           "urgency": 2,
           "customer_tier": "premium",
@@ -337,6 +358,7 @@
         {
           "id": "H022",
           "category_hint": "billing",
+          "specialist_team": "account_access",
           "description": "We cannot log in to E-commerce Store with valid credentials on Safari for MacOS.",
           "urgency": 3,
           "customer_tier": "premium",
@@ -356,6 +378,7 @@
         {
           "id": "H023",
           "category_hint": "general",
+          "specialist_team": "refunds",
           "description": "I need a refund for the recent Billing System charge on my Credit Card statement.",
           "urgency": 3,
           "customer_tier": "premium",
@@ -370,6 +393,7 @@
         {
           "id": "H024",
           "category_hint": "billing",
+          "specialist_team": "account_access",
           "description": "We cannot log in to Web Portal with valid credentials on Safari for Android.",
           "urgency": 5,
           "customer_tier": "free",

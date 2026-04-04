@@ -25,6 +25,19 @@ CATEGORY_TO_DEPARTMENT = {
     "Security Concern": "technical",
 }
 
+CATEGORY_TO_SPECIALIST_TEAM = {
+    "Payment Problem": "payments_ops",
+    "Refund Request": "refunds",
+    "Subscription Cancellation": "subscription_ops",
+    "Feature Request": "sales_ops",
+    "Account Suspension": "account_access",
+    "Login Issue": "account_access",
+    "Performance Issue": "platform_reliability",
+    "Bug Report": "product_bug",
+    "Data Sync Issue": "platform_reliability",
+    "Security Concern": "security",
+}
+
 
 @dataclass(frozen=True)
 class Candidate:
@@ -41,6 +54,7 @@ class Candidate:
     escalated: bool
     sla_breached: bool
     department: str
+    specialist_team: str
     priority: str
     action_type: str
     customer_tier: str
@@ -244,6 +258,7 @@ def load_candidates() -> list[Candidate]:
                     escalated=row["escalated"] == "Yes",
                     sla_breached=row["sla_breached"] == "Yes",
                     department=department,
+                    specialist_team=CATEGORY_TO_SPECIALIST_TEAM[row["category"]],
                     priority=priority,
                     action_type=action_type,
                     customer_tier=normalize_tier(row["subscription_type"]),
@@ -277,6 +292,7 @@ def ticket_from_candidate(candidate: Candidate, slot: SlotSpec) -> dict[str, obj
     return {
         "id": slot.id,
         "category_hint": slot.hint or slot.department,
+        "specialist_team": candidate.specialist_team,
         "description": candidate.description,
         "urgency": slot.urgency if slot.urgency is not None else candidate.urgency,
         "customer_tier": candidate.customer_tier,
@@ -369,7 +385,7 @@ SCENARIOS = {
         "difficulty": "hard",
         "description": "Dataset-backed triage with high hint noise, continuous arrivals, and fewer steps than tickets so the agent must trade off impact.",
         "start_time": 0,
-        "max_steps": 16,
+        "max_steps": 24,
         "sla_targets_steps": {"high": 2, "medium": 5, "low": 999},
         "initial": [
             slot("H001", "technical", "high", "escalate", "Bug Report", "Login Issue", "Security Concern", "Account Suspension", hint="billing", urgency=5),

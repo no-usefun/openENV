@@ -25,6 +25,7 @@ Each ticket contains:
 
 - `id`
 - `category_hint`: noisy classifier signal exposed to the agent.
+- `specialist_team`: more realistic operational sub-queue hint such as `payments_ops` or `security`.
 - `description`
 - `urgency`: integer from 1 to 5.
 - `customer_tier`: `free` or `premium`.

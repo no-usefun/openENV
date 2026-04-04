@@ -4,6 +4,16 @@ from pydantic import BaseModel, Field
 
 
 Department = Literal["billing", "technical", "general"]
+SpecialistTeam = Literal[
+    "payments_ops",
+    "refunds",
+    "subscription_ops",
+    "account_access",
+    "security",
+    "product_bug",
+    "platform_reliability",
+    "sales_ops",
+]
 Priority = Literal["low", "medium", "high"]
 ActionType = Literal["resolve", "escalate", "request_info"]
 CustomerTier = Literal["free", "premium"]
@@ -18,6 +28,7 @@ class GroundTruth(BaseModel):
 class Ticket(BaseModel):
     id: str
     category_hint: Department
+    specialist_team: Optional[SpecialistTeam] = None
     description: str = ""
     urgency: int = Field(ge=1, le=5)
     customer_tier: CustomerTier

@@ -13,6 +13,7 @@
     {
       "id": "M001",
       "category_hint": "general",
+      "specialist_team": "subscription_ops",
       "description": "My free subscription for Web Portal was cancelled unexpectedly and I need clarification.",
       "urgency": 3,
       "customer_tier": "free",
@@ -27,6 +28,7 @@
     {
       "id": "M002",
       "category_hint": "billing",
+      "specialist_team": "account_access",
       "description": "Users can no longer access Payment Gateway; the account appears suspended after sign-in on Edge for MacOS.",
       "urgency": 5,
       "customer_tier": "free",
@@ -41,6 +43,7 @@
     {
       "id": "M003",
       "category_hint": "technical",
+      "specialist_team": "sales_ops",
       "description": "Does Analytics Dashboard support scheduled summary exports for corporate teams, or is that only available on another plan?",
       "urgency": 1,
       "customer_tier": "premium",
@@ -55,6 +58,7 @@
     {
       "id": "M004",
       "category_hint": "general",
+      "specialist_team": "security",
       "description": "Two-factor authentication codes are not arriving, so the team cannot complete sign-in to Cloud Storage.",
       "urgency": 5,
       "customer_tier": "premium",
@@ -69,6 +73,7 @@
     {
       "id": "M005",
       "category_hint": "billing",
+      "specialist_team": "payments_ops",
       "description": "My payment for Payment Gateway looks wrong, but I am not sure which invoice or workspace is affected yet. It was billed through Crypto.",
       "urgency": 3,
       "customer_tier": "premium",
@@ -83,6 +88,7 @@
     {
       "id": "M006",
       "category_hint": "technical",
+      "specialist_team": "payments_ops",
       "description": "The payment for Subscription Service through Crypto went through, but the workspace still shows unpaid.",
       "urgency": 3,
       "customer_tier": "premium",
@@ -97,6 +103,7 @@
     {
       "id": "M007",
       "category_hint": "general",
+      "specialist_team": "sales_ops",
       "description": "Does Analytics Dashboard support scheduled summary exports for small business teams, or is that only available on another plan?",
       "urgency": 1,
       "customer_tier": "premium",
@@ -111,6 +118,7 @@
     {
       "id": "M008",
       "category_hint": "billing",
+      "specialist_team": "platform_reliability",
       "description": "Mobile App is not syncing data across devices, but I do not know yet whether the issue is limited to N/A on Windows.",
       "urgency": 3,
       "customer_tier": "free",
@@ -130,6 +138,7 @@
         {
           "id": "M009",
           "category_hint": "general",
+          "specialist_team": "account_access",
           "description": "Users can no longer access Cloud Storage; the account appears suspended after sign-in on Edge for Android.",
           "urgency": 5,
           "customer_tier": "premium",
@@ -144,6 +153,7 @@
         {
           "id": "M010",
           "category_hint": "technical",
+          "specialist_team": "subscription_ops",
           "description": "Our premium subscription for API Service was cancelled unexpectedly and the whole team lost access.",
           "urgency": 5,
           "customer_tier": "premium",
@@ -163,6 +173,7 @@
         {
           "id": "M011",
           "category_hint": "billing",
+          "specialist_team": "sales_ops",
           "description": "Does Web Portal support scheduled summary exports for corporate teams, or is that only available on another plan?",
           "urgency": 2,
           "customer_tier": "premium",
@@ -177,6 +188,7 @@
         {
           "id": "M012",
           "category_hint": "general",
+          "specialist_team": "platform_reliability",
           "description": "CRM Platform feels very slow in Australia, but I do not know yet if it is specific to N/A on Linux.",
           "urgency": 3,
           "customer_tier": "free",

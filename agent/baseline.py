@@ -53,6 +53,9 @@ TECHNICAL_PATTERNS = [
     "error",
 ]
 
+BILLING_SPECIALIST_TEAMS = {"payments_ops", "refunds", "subscription_ops"}
+TECHNICAL_SPECIALIST_TEAMS = {"account_access", "security", "product_bug", "platform_reliability"}
+
 REQUEST_INFO_PATTERNS = [
     "not sure",
     "do not know",
@@ -77,6 +80,7 @@ def _matches_any(description: str, patterns: list[str]) -> bool:
 
 def choose_action(ticket: Ticket) -> Action:
     description = (ticket.description or "").lower()
+    specialist_team = ticket.specialist_team
 
     is_general = _matches_any(description, GENERAL_PATTERNS)
     is_technical = _matches_any(description, TECHNICAL_PATTERNS)
@@ -95,6 +99,12 @@ def choose_action(ticket: Ticket) -> Action:
         department = "technical"
     elif is_billing:
         department = "billing"
+    elif specialist_team in TECHNICAL_SPECIALIST_TEAMS:
+        department = "technical"
+    elif specialist_team in BILLING_SPECIALIST_TEAMS:
+        department = "billing"
+    elif specialist_team == "sales_ops":
+        department = "general"
     else:
         department = ticket.category_hint
 

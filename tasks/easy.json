@@ -13,6 +13,7 @@
     {
       "id": "E001",
       "category_hint": "billing",
+      "specialist_team": "subscription_ops",
       "description": "My enterprise subscription for Payment Gateway was cancelled unexpectedly and I need clarification.",
       "urgency": 3,
       "customer_tier": "premium",
@@ -27,6 +28,7 @@
     {
       "id": "E002",
       "category_hint": "technical",
+      "specialist_team": "account_access",
       "description": "Users can no longer access Web Portal; the account appears suspended after sign-in on Edge for MacOS.",
       "urgency": 4,
       "customer_tier": "free",
@@ -41,6 +43,7 @@
     {
       "id": "E003",
       "category_hint": "general",
+      "specialist_team": "sales_ops",
       "description": "Does Web Portal support scheduled summary exports for individual teams, or is that only available on another plan?",
       "urgency": 1,
       "customer_tier": "premium",
@@ -55,6 +58,7 @@
     {
       "id": "E004",
       "category_hint": "billing",
+      "specialist_team": "refunds",
       "description": "I need a refund for the recent Mobile App charge on my Crypto statement.",
       "urgency": 2,
       "customer_tier": "premium",
@@ -69,6 +73,7 @@
     {
       "id": "E005",
       "category_hint": "billing",
+      "specialist_team": "payments_ops",
       "description": "My payment for E-commerce Store looks wrong, but I am not sure which invoice or workspace is affected yet. It was billed through Crypto.",
       "urgency": 3,
       "customer_tier": "premium",
@@ -83,6 +88,7 @@
     {
       "id": "E006",
       "category_hint": "technical",
+      "specialist_team": "account_access",
       "description": "Users can no longer access Cloud Storage; the account appears suspended after sign-in on Safari for Android.",
       "urgency": 5,
       "customer_tier": "free",

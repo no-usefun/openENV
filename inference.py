@@ -31,6 +31,7 @@ Allowed labels:
 
 Rules:
 - Prefer urgent and long-waiting tickets when tradeoffs exist.
+- `specialist_team` is a realistic queue hint. Use it when the text is ambiguous, but the scored department must still be one of billing, technical, or general.
 - Route from the issue symptom, not the product name. A product called "Billing System" can still be a technical ticket.
 - Feature, plan, and how-to questions are usually general unless they clearly mention a billing dispute.
 - Refunds, charges, renewals, unpaid workspaces, and payment failures are usually billing.

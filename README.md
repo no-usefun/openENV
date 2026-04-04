@@ -1,45 +1,144 @@
 # Support Triage OpenEnv
 
-Support Triage OpenEnv is a deterministic customer-support routing benchmark built for OpenEnv-style RL and agent evaluation. The environment simulates the work of a support triage operator who must decide which ticket to handle next and assign the correct department, priority, and action under time pressure.
-
-## Why this environment
-
-Real support teams do not just classify tickets. They choose what to handle first, decide whether a case is billing or technical, and balance fast resolutions against escalation and SLA risk. This benchmark captures those tradeoffs in a simple, reproducible environment.
-
-## Core Objective
-
-Given an incoming support queue, the agent must choose one ticket and assign:
+Support Triage OpenEnv is a deterministic customer-support routing benchmark built for OpenEnv-style RL and agent evaluation. The agent must decide which ticket to handle next and assign:
 
 - `department`: `billing`, `technical`, or `general`
 - `priority`: `low`, `medium`, or `high`
 - `action_type`: `resolve`, `escalate`, or `request_info`
 
-The goal is to maximize correct routing, prioritize urgent tickets, and avoid SLA violations.
+The benchmark is grounded in the local dataset [customer_support_tickets_200k.csv](tasks/customer_support_tickets_200k.csv), but evaluation uses three reproducible tasks: `easy`, `medium`, and `hard`.
 
-## Observation Space
+## Quick Start
+
+### 1. Install dependencies
+
+```bash
+python -m venv .venv
+. .venv/bin/activate
+pip install -r requirements.txt
+```
+
+On Windows PowerShell:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+### 2. Run tests
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+### 3. Run the local heuristic benchmark
+
+```bash
+python inference.py --heuristic-only
+```
+
+### 4. Run only the hard task
+
+```bash
+python inference.py --heuristic-only --scenario hard
+```
+
+### 5. Run the API locally
+
+```bash
+uvicorn app:app --host 0.0.0.0 --port 8000
+```
+
+Useful endpoints:
+
+- `GET /health`
+- `GET /tasks`
+- `GET /reset`
+- `POST /reset`
+- `GET /state/{session_id}`
+- `POST /step/{session_id}`
+- `GET /grade/{session_id}`
+
+## Current Baseline
+
+Current heuristic smoke scores:
+
+- `easy`: `0.9583`
+- `medium`: `0.9875`
+- `hard`: `0.9318`
+- overall average: `0.9592`
+
+The hard task is intentionally harder because several high-priority tickets overlap under a tight SLA window.
+
+## Daily Commands
+
+Run tests:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+Run all tasks with the heuristic baseline:
+
+```bash
+python inference.py --heuristic-only
+```
+
+Run a single task:
+
+```bash
+python inference.py --heuristic-only --scenario medium
+python inference.py --heuristic-only --scenario hard
+```
+
+Run the CLI smoke app:
+
+```bash
+python app.py
+python app.py medium
+python app.py hard
+```
+
+Build Docker:
+
+```bash
+docker build -t support-triage-env .
+```
+
+Run Docker:
+
+```bash
+docker run -p 8000:8000 support-triage-env
+```
+
+## Environment Contract
+
+### Observation
 
 The environment exposes a typed Pydantic `Observation` with:
 
-- `current_ticket`: the next ticket surfaced by the queue ordering
-- `pending_count`: number of tickets still waiting
-- `resolved_count`: number of tickets already handled
-- `current_time`: simulated environment time
-- `step_number`: number of actions taken so far
-- `pending_tickets`: visible ticket queue
-- `resolved_tickets`: previously taken decisions
+- `current_ticket`
+- `pending_count`
+- `resolved_count`
+- `current_time`
+- `step_number`
+- `pending_tickets`
+- `resolved_tickets`
 
 Each visible `Ticket` contains:
 
 - `id`
 - `category_hint`
+- `specialist_team`
 - `description`
 - `urgency`
 - `customer_tier`
 - `time_waiting`
 
-Ground-truth labels are stored internally in the task files and are not shown to the agent.
+`specialist_team` is a realistic queue hint such as `payments_ops`, `security`, or `product_bug`. It is visible to the agent, but the scored routing target remains the coarser 3-way `department` label.
 
-## Action Space
+### Action
 
 The typed `Action` model contains:
 
@@ -48,19 +147,23 @@ The typed `Action` model contains:
 - `priority`
 - `action_type`
 
-An action is valid only if the values match the allowed literals in [env/models.py](env/models.py).
+The benchmark is intentionally judged on exactly these three routing labels:
 
-## Reward Function
+- `billing`
+- `technical`
+- `general`
 
-Dense step reward is implemented in [env/core.py](env/core.py).
+### Reward
 
-Positive signals:
+Dense step reward is implemented in `env/core.py`.
+
+Positive:
 
 - correct department: `+0.2`
 - correct priority: `+0.15`
 - correct action: `+0.1`
 
-Negative signals:
+Negative:
 
 - wrong department: `-0.3`
 - ignoring an urgent ticket while handling a less urgent one: `-0.5`
@@ -70,9 +173,9 @@ Each step returns a typed `Reward` with:
 
 - `step_score` in `[-1, 1]`
 - `total_score` normalized to `[0, 1]`
-- `breakdown` for debugging
+- `breakdown`
 
-## Grader
+### Grader
 
 Final scoring is deterministic and normalized to `[0, 1]`.
 
@@ -92,148 +195,121 @@ Final score:
 0.15 * action_accuracy
 ```
 
-This logic is implemented in [env/grader.py](env/grader.py).
-
 ## Tasks
 
 The benchmark ships with three deterministic tasks:
 
-- `easy`: 6 tickets, mostly clean category hints, no new arrivals
-- `medium`: 12 total tickets, noisy hints, scheduled arrivals, visible SLA pressure
-- `hard`: 24 total tickets, continuous arrivals, limited steps, forced tradeoffs
+- `easy`: 6 tickets, clean-ish hints, no arrivals
+- `medium`: 12 total tickets, noisy hints, scheduled arrivals
+- `hard`: 24 total tickets, continuous arrivals, high overlap
 
-Task definitions live in [tasks/easy.json](tasks/easy.json), [tasks/medium.json](tasks/medium.json), and [tasks/hard.json](tasks/hard.json).
+Task files:
 
-## Project Structure
+- `tasks/easy.json`
+- `tasks/medium.json`
+- `tasks/hard.json`
 
-```text
-support-triage-env/
-├── agent/
-│   └── baseline.py
-├── env/
-│   ├── core.py
-│   ├── environment.py
-│   ├── grader.py
-│   ├── models.py
-│   ├── tasks.py
-│   └── tickets.py
-├── tasks/
-│   ├── easy.json
-│   ├── medium.json
-│   └── hard.json
-├── tests/
-│   ├── test_environment.py
-│   ├── test_grader.py
-│   └── test_tasks.py
-├── app.py
-├── inference.py
-├── openenv.yaml
-├── Dockerfile
-└── requirements.txt
-```
+The task files are generated from the CSV source, not hand-maintained line by line.
 
-## Setup
+## Task Generation Workflow
 
-### Local Python setup
+Source dataset:
+
+- `tasks/customer_support_tickets_200k.csv`
+
+Generator:
+
+- `scripts/generate_tasks_from_csv.py`
+
+Regenerate tasks:
 
 ```bash
-python -m venv .venv
-. .venv/bin/activate
-pip install -r requirements.txt
+python scripts/generate_tasks_from_csv.py
 ```
 
-On Windows PowerShell:
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-```
-
-### Run tests
+After regeneration, always run:
 
 ```bash
 python -m unittest discover -s tests -v
-```
-
-## Local Usage
-
-### CLI smoke test
-
-Run the heuristic baseline against a single task:
-
-```bash
-python app.py
-python app.py medium
-python app.py hard
-```
-
-### HTTP server
-
-Run the FastAPI app locally:
-
-```bash
-uvicorn app:app --host 0.0.0.0 --port 8000
-```
-
-Useful endpoints:
-
-- `GET /`
-- `GET /health`
-- `GET /tasks`
-- `GET /reset`
-- `POST /reset`
-- `GET /state/{session_id}`
-- `POST /step/{session_id}`
-- `GET /grade/{session_id}`
-
-Example reset call:
-
-```bash
-curl -X POST http://127.0.0.1:8000/reset \
-  -H "Content-Type: application/json" \
-  -d '{"scenario_name":"easy"}'
-```
-
-## Baseline Inference
-
-`inference.py` runs a reproducible baseline over one task or all tasks.
-
-Required environment variables:
-
-- `MODEL_NAME`
-- `API_BASE_URL` (optional for native OpenAI, defaults to `https://api.openai.com/v1`)
-- `OPENAI_API_KEY` or `HF_TOKEN`
-
-Run all tasks with the OpenAI client:
-
-```bash
-python inference.py
-```
-
-Run a single task:
-
-```bash
-python inference.py --scenario medium
-```
-
-Run the heuristic fallback only:
-
-```bash
 python inference.py --heuristic-only
 ```
 
-The baseline prints JSON with per-task scores, fallback counts, and the average final score.
+## What To Edit
 
-## Verified Local Smoke Scores
+### If you want to tune ticket wording or scenario composition
 
-These are the current heuristic smoke-test scores from the local environment:
+Edit:
 
-- `easy`: `0.9583`
-- `medium`: `0.8667`
-- `hard`: `0.55`
+- `scripts/generate_tasks_from_csv.py`
+- optional: `tasks/README.md`
 
-Model-based scores depend on the configured `MODEL_NAME` and API endpoint.
+Then regenerate:
+
+```bash
+python scripts/generate_tasks_from_csv.py
+```
+
+### If you want to add more realism without changing the scored action space
+
+Good place to add fields like `specialist_team`, `queue`, or other visible hints:
+
+- `env/models.py`
+- `scripts/generate_tasks_from_csv.py`
+- `agent/baseline.py`
+- `inference.py`
+- `tests/test_tasks.py`
+- `README.md`
+
+This is the safest kind of realism upgrade.
+
+### If you want to change the scored department space
+
+Do not change only the JSON.
+
+To expand or rename scored departments, you must update all of:
+
+- `env/models.py`
+- `scripts/generate_tasks_from_csv.py`
+- `agent/baseline.py`
+- `inference.py`
+- `tests/`
+- `README.md`
+- generated task files in `tasks/`
+
+Otherwise the environment will fail validation or silently mis-score actions.
+
+### If you want to tune hard-task difficulty
+
+The main knobs are:
+
+- `max_steps`
+- `arrival_schedule`
+- `sla_targets_steps`
+- which tickets are marked high priority
+
+Those are all controlled through `scripts/generate_tasks_from_csv.py`.
+
+## Model-Backed Inference
+
+`inference.py` can run either:
+
+- heuristic-only mode
+- OpenAI-client mode
+
+Required environment variables for model-backed mode:
+
+- `MODEL_NAME`
+- `API_BASE_URL`
+- `OPENAI_API_KEY` or `HF_TOKEN`
+
+Examples:
+
+```powershell
+$env:HF_TOKEN="your_token_here"
+$env:API_BASE_URL="https://router.huggingface.co/v1"
+$env:MODEL_NAME="deepseek-ai/DeepSeek-V3-0324"
+python inference.py
+```
 
 ## Docker
 
@@ -249,12 +325,88 @@ Run:
 docker run -p 8000:8000 support-triage-env
 ```
 
-## Hugging Face Spaces
+Container verification:
 
-The repository includes:
+```powershell
+Invoke-RestMethod http://127.0.0.1:8000/health
+Invoke-RestMethod http://127.0.0.1:8000/reset
+```
 
-- a Dockerfile for containerized deployment
-- a FastAPI entrypoint exposed through [app.py](app.py)
-- [openenv.yaml](openenv.yaml) configured for `runtime: fastapi`
+## Hugging Face Space Deploy
 
-This makes the project ready to package as a Docker-based Hugging Face Space tagged for OpenEnv.
+This repo is set up to deploy as a Docker Space.
+
+Key files:
+
+- `Dockerfile`
+- `app.py`
+- `openenv.yaml`
+
+Typical deploy flow:
+
+1. Create a Docker Space on Hugging Face.
+2. Add secrets like `HF_TOKEN`.
+3. Add variables like `API_BASE_URL` and `MODEL_NAME`.
+4. Push this repo to the Space remote.
+5. Verify `/health` and `/reset` on the deployed URL.
+
+## Repo Map
+
+```text
+support-triage-env/
+|-- agent/
+|   `-- baseline.py
+|-- env/
+|   |-- core.py
+|   |-- environment.py
+|   |-- grader.py
+|   |-- models.py
+|   |-- tasks.py
+|   `-- tickets.py
+|-- scripts/
+|   `-- generate_tasks_from_csv.py
+|-- tasks/
+|   |-- customer_support_tickets_200k.csv
+|   |-- easy.json
+|   |-- medium.json
+|   |-- hard.json
+|   `-- README.md
+|-- tests/
+|   |-- test_api.py
+|   |-- test_environment.py
+|   |-- test_grader.py
+|   |-- test_inference.py
+|   `-- test_tasks.py
+|-- app.py
+|-- inference.py
+|-- openenv.yaml
+|-- Dockerfile
+`-- requirements.txt
+```
+
+## Troubleshooting
+
+### Score suddenly dropped after regenerating tasks
+
+Check whether `scripts/generate_tasks_from_csv.py` changed:
+
+- `hard.max_steps`
+- `sla_targets_steps`
+- arrival timing
+- priority/action derivation rules
+
+Then rerun:
+
+```bash
+python scripts/generate_tasks_from_csv.py
+python -m unittest discover -s tests -v
+python inference.py --heuristic-only
+```
+
+### Docker works locally but score changed
+
+Docker only proves packaging and runtime health. It does not prove the benchmark logic stayed the same. Always rerun tests and the heuristic benchmark after task or generator changes.
+
+### Want more realism but do not want to break validation
+
+Add non-scored visible fields like `specialist_team` instead of changing the scored `department` action space.
