@@ -1,0 +1,277 @@
+[
+  {
+    "id": "T131",
+    "category_hint": "billing",
+    "description": "Something is wrong with my account, not sure what.",
+    "urgency": 2,
+    "customer_tier": "free",
+    "time_waiting": 12,
+    "ground_truth": { "department": "technical", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T132",
+    "category_hint": "technical",
+    "description": "I was charged extra but also cannot log in.",
+    "urgency": 4,
+    "customer_tier": "premium",
+    "time_waiting": 25,
+    "ground_truth": { "department": "technical", "priority": "high", "action_type": "request_info" }
+  },
+  {
+    "id": "T133",
+    "category_hint": "general",
+    "description": "",
+    "urgency": 1,
+    "customer_tier": "free",
+    "time_waiting": 5,
+    "ground_truth": { "department": "general", "priority": "low", "action_type": "request_info" }
+  },
+  {
+    "id": "T134",
+    "category_hint": "billing",
+    "description": "Refund??",
+    "urgency": 5,
+    "customer_tier": "free",
+    "time_waiting": 1,
+    "ground_truth": { "department": "billing", "priority": "high", "action_type": "request_info" }
+  },
+  {
+    "id": "T135",
+    "category_hint": "technical",
+    "description": "Doesn't work.",
+    "urgency": 3,
+    "customer_tier": "free",
+    "time_waiting": 60,
+    "ground_truth": { "department": "technical", "priority": "medium", "action_type": "request_info" }
+  },
+
+  {
+    "id": "T136",
+    "category_hint": "billing",
+    "description": "Login issue but money also deducted.",
+    "urgency": 4,
+    "customer_tier": "premium",
+    "time_waiting": 80,
+    "ground_truth": { "department": "technical", "priority": "high", "action_type": "request_info" }
+  },
+  {
+    "id": "T137",
+    "category_hint": "general",
+    "description": "I think I upgraded? Not sure.",
+    "urgency": 2,
+    "customer_tier": "free",
+    "time_waiting": 20,
+    "ground_truth": { "department": "billing", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T138",
+    "category_hint": "technical",
+    "description": "Error code 504 but only sometimes maybe.",
+    "urgency": 3,
+    "customer_tier": "premium",
+    "time_waiting": 45,
+    "ground_truth": { "department": "technical", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T139",
+    "category_hint": "billing",
+    "description": "Charged but I think it's okay? Just checking.",
+    "urgency": 1,
+    "customer_tier": "free",
+    "time_waiting": 10,
+    "ground_truth": { "department": "billing", "priority": "low", "action_type": "request_info" }
+  },
+  {
+    "id": "T140",
+    "category_hint": "technical",
+    "description": "App slow maybe due to internet idk.",
+    "urgency": 2,
+    "customer_tier": "free",
+    "time_waiting": 70,
+    "ground_truth": { "department": "technical", "priority": "low", "action_type": "request_info" }
+  },
+
+  {
+    "id": "T141",
+    "category_hint": "general",
+    "description": "Where is my money?",
+    "urgency": 5,
+    "customer_tier": "premium",
+    "time_waiting": 100,
+    "ground_truth": { "department": "billing", "priority": "high", "action_type": "request_info" }
+  },
+  {
+    "id": "T142",
+    "category_hint": "billing",
+    "description": "Issue with API and also billing maybe.",
+    "urgency": 4,
+    "customer_tier": "premium",
+    "time_waiting": 55,
+    "ground_truth": { "department": "technical", "priority": "high", "action_type": "request_info" }
+  },
+  {
+    "id": "T143",
+    "category_hint": "technical",
+    "description": "Something failed after update but not sure what exactly.",
+    "urgency": 3,
+    "customer_tier": "premium",
+    "time_waiting": 35,
+    "ground_truth": { "department": "technical", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T144",
+    "category_hint": "general",
+    "description": "Need help ASAP",
+    "urgency": 5,
+    "customer_tier": "free",
+    "time_waiting": 2,
+    "ground_truth": { "department": "general", "priority": "high", "action_type": "request_info" }
+  },
+  {
+    "id": "T145",
+    "category_hint": "billing",
+    "description": "Invoice seems off but could be correct.",
+    "urgency": 2,
+    "customer_tier": "free",
+    "time_waiting": 90,
+    "ground_truth": { "department": "billing", "priority": "low", "action_type": "request_info" }
+  },
+
+  {
+    "id": "T146",
+    "category_hint": "technical",
+    "description": "Working yesterday not today.",
+    "urgency": 4,
+    "customer_tier": "premium",
+    "time_waiting": 15,
+    "ground_truth": { "department": "technical", "priority": "high", "action_type": "request_info" }
+  },
+  {
+    "id": "T147",
+    "category_hint": "billing",
+    "description": "Double charge or maybe not.",
+    "urgency": 3,
+    "customer_tier": "free",
+    "time_waiting": 50,
+    "ground_truth": { "department": "billing", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T148",
+    "category_hint": "general",
+    "description": "Can’t access something.",
+    "urgency": 3,
+    "customer_tier": "free",
+    "time_waiting": 60,
+    "ground_truth": { "department": "technical", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T149",
+    "category_hint": "technical",
+    "description": "API key invalid but I didn’t change anything.",
+    "urgency": 4,
+    "customer_tier": "premium",
+    "time_waiting": 30,
+    "ground_truth": { "department": "technical", "priority": "high", "action_type": "request_info" }
+  },
+  {
+    "id": "T150",
+    "category_hint": "billing",
+    "description": "Payment issue I guess.",
+    "urgency": 2,
+    "customer_tier": "free",
+    "time_waiting": 40,
+    "ground_truth": { "department": "billing", "priority": "medium", "action_type": "request_info" }
+  },
+
+  {
+    "id": "T151",
+    "category_hint": "general",
+    "description": "Not working properly and charged me too.",
+    "urgency": 5,
+    "customer_tier": "premium",
+    "time_waiting": 120,
+    "ground_truth": { "department": "technical", "priority": "high", "action_type": "request_info" }
+  },
+  {
+    "id": "T152",
+    "category_hint": "technical",
+    "description": "Bug?",
+    "urgency": 1,
+    "customer_tier": "free",
+    "time_waiting": 5,
+    "ground_truth": { "department": "technical", "priority": "low", "action_type": "request_info" }
+  },
+  {
+    "id": "T153",
+    "category_hint": "billing",
+    "description": "Subscription? idk what happened.",
+    "urgency": 2,
+    "customer_tier": "free",
+    "time_waiting": 22,
+    "ground_truth": { "department": "billing", "priority": "low", "action_type": "request_info" }
+  },
+  {
+    "id": "T154",
+    "category_hint": "technical",
+    "description": "Crash but only sometimes after clicking something.",
+    "urgency": 3,
+    "customer_tier": "premium",
+    "time_waiting": 48,
+    "ground_truth": { "department": "technical", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T155",
+    "category_hint": "general",
+    "description": "Help me fix this quickly.",
+    "urgency": 4,
+    "customer_tier": "free",
+    "time_waiting": 7,
+    "ground_truth": { "department": "general", "priority": "high", "action_type": "request_info" }
+  },
+
+  {
+    "id": "T156",
+    "category_hint": "billing",
+    "description": "Charged twice but also can’t use features.",
+    "urgency": 5,
+    "customer_tier": "premium",
+    "time_waiting": 85,
+    "ground_truth": { "department": "technical", "priority": "high", "action_type": "request_info" }
+  },
+  {
+    "id": "T157",
+    "category_hint": "technical",
+    "description": "It says error but no idea what it means.",
+    "urgency": 2,
+    "customer_tier": "free",
+    "time_waiting": 65,
+    "ground_truth": { "department": "technical", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T158",
+    "category_hint": "general",
+    "description": "Account issue.",
+    "urgency": 3,
+    "customer_tier": "free",
+    "time_waiting": 30,
+    "ground_truth": { "department": "technical", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T159",
+    "category_hint": "billing",
+    "description": "Refund pending maybe? Not sure if processed.",
+    "urgency": 3,
+    "customer_tier": "premium",
+    "time_waiting": 95,
+    "ground_truth": { "department": "billing", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T160",
+    "category_hint": "technical",
+    "description": "Everything broken.",
+    "urgency": 5,
+    "customer_tier": "premium",
+    "time_waiting": 200,
+    "ground_truth": { "department": "technical", "priority": "high", "action_type": "request_info" }
+  }
+]

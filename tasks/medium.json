@@ -1,7 +1,7 @@
 {
   "scenario_id": "support-triage-medium-v1",
   "difficulty": "medium",
-  "description": "Noisier hints, staged new arrivals, and enough urgent work to force prioritization decisions.",
+  "description": "Dataset-backed triage with noisier hints, staged arrivals, and enough urgent work to force prioritization.",
   "start_time": 0,
   "max_steps": 12,
   "sla_targets_steps": {
@@ -13,114 +13,114 @@
     {
       "id": "M001",
       "category_hint": "general",
-      "description": "Our annual plan renewed overnight even though I thought auto-renew was off. Please refund it if possible.",
+      "description": "My free subscription for Web Portal was cancelled unexpectedly and I need clarification.",
       "urgency": 3,
-      "customer_tier": "premium",
-      "time_waiting": 82,
+      "customer_tier": "free",
+      "time_waiting": 7,
       "ground_truth": {
         "department": "billing",
         "priority": "medium",
         "action_type": "resolve"
       },
-      "ground_truth_reason": "The hint is misleading, but this is a standard billing renewal dispute with enough context to act."
+      "ground_truth_reason": "Generated from CSV ticket 8 (Subscription Cancellation on Web Portal). Route to billing; priority is medium from the source severity and action is resolve from the source status and escalation signals."
     },
     {
       "id": "M002",
       "category_hint": "billing",
-      "description": "Our whole team is locked out because every 2FA code is being rejected after today’s login policy change.",
-      "urgency": 4,
-      "customer_tier": "premium",
-      "time_waiting": 35,
+      "description": "Users can no longer access Payment Gateway; the account appears suspended after sign-in on Edge for MacOS.",
+      "urgency": 5,
+      "customer_tier": "free",
+      "time_waiting": 42,
       "ground_truth": {
         "department": "technical",
         "priority": "high",
         "action_type": "escalate"
       },
-      "ground_truth_reason": "Access failure for an entire team is a technical incident despite the noisy billing hint."
+      "ground_truth_reason": "Generated from CSV ticket 14 (Account Suspension on Payment Gateway). Route to technical; priority is high from the source severity and action is escalate from the source status and escalation signals."
     },
     {
       "id": "M003",
       "category_hint": "technical",
-      "description": "Where can I download your data processing addendum for our records?",
+      "description": "Does Analytics Dashboard support scheduled summary exports for corporate teams, or is that only available on another plan?",
       "urgency": 1,
-      "customer_tier": "free",
-      "time_waiting": 12,
+      "customer_tier": "premium",
+      "time_waiting": 51,
       "ground_truth": {
         "department": "general",
         "priority": "low",
         "action_type": "resolve"
       },
-      "ground_truth_reason": "Documentation request with a wrong hint and no technical troubleshooting required."
+      "ground_truth_reason": "Generated from CSV ticket 76 (Feature Request on Analytics Dashboard). Route to general; priority is low from the source severity and action is resolve from the source status and escalation signals."
     },
     {
       "id": "M004",
       "category_hint": "general",
-      "description": "Webhook deliveries started returning 500 for every event right after yesterday's release.",
-      "urgency": 4,
-      "customer_tier": "free",
-      "time_waiting": 21,
+      "description": "Two-factor authentication codes are not arriving, so the team cannot complete sign-in to Cloud Storage.",
+      "urgency": 5,
+      "customer_tier": "premium",
+      "time_waiting": 5,
       "ground_truth": {
         "department": "technical",
         "priority": "high",
         "action_type": "escalate"
       },
-      "ground_truth_reason": "Production integration failures are technical and time-sensitive."
+      "ground_truth_reason": "Generated from CSV ticket 32 (Security Concern on Cloud Storage). Route to technical; priority is high from the source severity and action is escalate from the source status and escalation signals."
     },
     {
       "id": "M005",
       "category_hint": "billing",
-      "description": "My invoice amount looks wrong, but I do not know which subscription changed or when it happened.",
-      "urgency": 2,
-      "customer_tier": "free",
-      "time_waiting": 96,
+      "description": "My payment for Payment Gateway looks wrong, but I am not sure which invoice or workspace is affected yet. It was billed through Crypto.",
+      "urgency": 3,
+      "customer_tier": "premium",
+      "time_waiting": 100,
       "ground_truth": {
         "department": "billing",
         "priority": "medium",
         "action_type": "request_info"
       },
-      "ground_truth_reason": "Billing owns it, but key information is missing so requesting more detail is the correct action."
+      "ground_truth_reason": "Generated from CSV ticket 741 (Payment Problem on Payment Gateway). Route to billing; priority is medium from the source severity and action is request_info from the source status and escalation signals."
     },
     {
       "id": "M006",
       "category_hint": "technical",
-      "description": "We reduced our workspace from 12 seats to 8 last week, but the renewal still charged us for 12.",
+      "description": "The payment for Subscription Service through Crypto went through, but the workspace still shows unpaid.",
       "urgency": 3,
       "customer_tier": "premium",
-      "time_waiting": 48,
+      "time_waiting": 102,
       "ground_truth": {
         "department": "billing",
         "priority": "medium",
         "action_type": "resolve"
       },
-      "ground_truth_reason": "Seat-count billing mismatch is owned by billing and can be corrected from the ticket."
+      "ground_truth_reason": "Generated from CSV ticket 22 (Payment Problem on Subscription Service). Route to billing; priority is medium from the source severity and action is resolve from the source status and escalation signals."
     },
     {
       "id": "M007",
       "category_hint": "general",
-      "description": "How do I invite another teammate to the workspace?",
-      "urgency": 2,
-      "customer_tier": "free",
-      "time_waiting": 8,
+      "description": "Does Analytics Dashboard support scheduled summary exports for small business teams, or is that only available on another plan?",
+      "urgency": 1,
+      "customer_tier": "premium",
+      "time_waiting": 107,
       "ground_truth": {
         "department": "general",
         "priority": "low",
         "action_type": "resolve"
       },
-      "ground_truth_reason": "Simple product usage guidance with low urgency."
+      "ground_truth_reason": "Generated from CSV ticket 80 (Feature Request on Analytics Dashboard). Route to general; priority is low from the source severity and action is resolve from the source status and escalation signals."
     },
     {
       "id": "M008",
       "category_hint": "billing",
-      "description": "The mobile app just spins forever on startup after the latest update.",
+      "description": "Mobile App is not syncing data across devices, but I do not know yet whether the issue is limited to N/A on Windows.",
       "urgency": 3,
       "customer_tier": "free",
-      "time_waiting": 27,
+      "time_waiting": 85,
       "ground_truth": {
         "department": "technical",
         "priority": "medium",
-        "action_type": "escalate"
+        "action_type": "request_info"
       },
-      "ground_truth_reason": "Client-side startup bug belongs to technical support even though the hint is wrong."
+      "ground_truth_reason": "Generated from CSV ticket 29 (Data Sync Issue on Mobile App). Route to technical; priority is medium from the source severity and action is request_info from the source status and escalation signals."
     }
   ],
   "arrival_schedule": [
@@ -130,30 +130,30 @@
         {
           "id": "M009",
           "category_hint": "general",
-          "description": "Our production API started returning 401 for valid keys right after key rotation. Checkout is failing.",
+          "description": "Users can no longer access Cloud Storage; the account appears suspended after sign-in on Edge for Android.",
           "urgency": 5,
           "customer_tier": "premium",
-          "time_waiting": 5,
+          "time_waiting": 62,
           "ground_truth": {
             "department": "technical",
             "priority": "high",
             "action_type": "escalate"
           },
-          "ground_truth_reason": "Revenue-impacting authentication outage is critical and needs technical escalation."
+          "ground_truth_reason": "Generated from CSV ticket 34 (Account Suspension on Cloud Storage). Route to technical; priority is high from the source severity and action is escalate from the source status and escalation signals."
         },
         {
           "id": "M010",
           "category_hint": "technical",
-          "description": "My card was charged, but the workspace still shows unpaid and all paid features are locked.",
-          "urgency": 4,
+          "description": "Our premium subscription for API Service was cancelled unexpectedly and the whole team lost access.",
+          "urgency": 5,
           "customer_tier": "premium",
-          "time_waiting": 15,
+          "time_waiting": 25,
           "ground_truth": {
             "department": "billing",
             "priority": "high",
             "action_type": "escalate"
           },
-          "ground_truth_reason": "Billing/payment sync issue is blocking account access and should be handled urgently."
+          "ground_truth_reason": "Generated from CSV ticket 17 (Subscription Cancellation on API Service). Route to billing; priority is high from the source severity and action is escalate from the source status and escalation signals."
         }
       ]
     },
@@ -163,30 +163,30 @@
         {
           "id": "M011",
           "category_hint": "billing",
-          "description": "Can you explain the difference between the Business and Enterprise plans before we upgrade?",
-          "urgency": 1,
+          "description": "Does Web Portal support scheduled summary exports for corporate teams, or is that only available on another plan?",
+          "urgency": 2,
           "customer_tier": "premium",
-          "time_waiting": 3,
+          "time_waiting": 82,
           "ground_truth": {
             "department": "general",
-            "priority": "low",
+            "priority": "medium",
             "action_type": "resolve"
           },
-          "ground_truth_reason": "This is a general product question despite the billing hint."
+          "ground_truth_reason": "Generated from CSV ticket 5 (Feature Request on Web Portal). Route to general; priority is medium from the source severity and action is resolve from the source status and escalation signals."
         },
         {
           "id": "M012",
           "category_hint": "general",
-          "description": "Reports are very slow for one user in our org, but I do not know if it is browser-specific yet.",
-          "urgency": 2,
+          "description": "CRM Platform feels very slow in Australia, but I do not know yet if it is specific to N/A on Linux.",
+          "urgency": 3,
           "customer_tier": "free",
-          "time_waiting": 10,
+          "time_waiting": 77,
           "ground_truth": {
             "department": "technical",
             "priority": "medium",
             "action_type": "request_info"
           },
-          "ground_truth_reason": "Technical ownership is clear, but more diagnostics are needed before the issue can be worked."
+          "ground_truth_reason": "Generated from CSV ticket 70 (Performance Issue on CRM Platform). Route to technical; priority is medium from the source severity and action is request_info from the source status and escalation signals."
         }
       ]
     }

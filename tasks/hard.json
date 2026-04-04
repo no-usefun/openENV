@@ -1,9 +1,9 @@
 {
   "scenario_id": "support-triage-hard-v1",
   "difficulty": "hard",
-  "description": "High hint noise, continuous arrivals, and fewer steps than total tickets so the agent must triage for impact.",
+  "description": "Dataset-backed triage with high hint noise, continuous arrivals, and fewer steps than tickets so the agent must trade off impact.",
   "start_time": 0,
-  "max_steps": 16,
+  "max_steps": 24,
   "sla_targets_steps": {
     "high": 2,
     "medium": 5,
@@ -13,142 +13,142 @@
     {
       "id": "H001",
       "category_hint": "billing",
-      "description": "EU customers cannot complete checkout because the payment step spins forever for every order.",
+      "description": "Users can no longer access API Service; the account appears suspended after sign-in on Safari for Linux.",
       "urgency": 5,
       "customer_tier": "premium",
-      "time_waiting": 25,
+      "time_waiting": 104,
       "ground_truth": {
         "department": "technical",
         "priority": "high",
         "action_type": "escalate"
       },
-      "ground_truth_reason": "Checkout outage is a critical technical incident even though the symptom appears in billing."
+      "ground_truth_reason": "Generated from CSV ticket 39 (Account Suspension on API Service). Route to technical; priority is high from the source severity and action is escalate from the source status and escalation signals."
     },
     {
       "id": "H002",
       "category_hint": "general",
-      "description": "We canceled last month but still got charged again on this morning's renewal.",
-      "urgency": 4,
-      "customer_tier": "free",
-      "time_waiting": 90,
-      "ground_truth": {
-        "department": "billing",
-        "priority": "high",
-        "action_type": "resolve"
-      },
-      "ground_truth_reason": "Wrongful renewal charge is urgent enough to prioritize and can be corrected directly by billing."
-    },
-    {
-      "id": "H003",
-      "category_hint": "technical",
-      "description": "Procurement asked for your certificate of insurance before they can finish vendor review.",
-      "urgency": 2,
-      "customer_tier": "premium",
-      "time_waiting": 18,
-      "ground_truth": {
-        "department": "general",
-        "priority": "low",
-        "action_type": "resolve"
-      },
-      "ground_truth_reason": "Administrative request with a misleading technical hint."
-    },
-    {
-      "id": "H004",
-      "category_hint": "general",
-      "description": "SSO login has failed for every new employee since this morning. Existing users can still sign in.",
+      "description": "I need a refund for the recent Billing System charge on my PayPal statement.",
       "urgency": 5,
-      "customer_tier": "premium",
-      "time_waiting": 40,
-      "ground_truth": {
-        "department": "technical",
-        "priority": "high",
-        "action_type": "escalate"
-      },
-      "ground_truth_reason": "Organization-wide onboarding blocker requires urgent technical escalation."
-    },
-    {
-      "id": "H005",
-      "category_hint": "billing",
-      "description": "My invoice total changed, maybe because of taxes, but I am not sure which invoice is wrong.",
-      "urgency": 2,
-      "customer_tier": "free",
-      "time_waiting": 110,
-      "ground_truth": {
-        "department": "billing",
-        "priority": "medium",
-        "action_type": "request_info"
-      },
-      "ground_truth_reason": "Billing owns the issue, but the ticket lacks enough identifying detail to resolve."
-    },
-    {
-      "id": "H006",
-      "category_hint": "technical",
-      "description": "The desktop app crashes every time I open the analytics tab after the latest update.",
-      "urgency": 3,
-      "customer_tier": "free",
-      "time_waiting": 22,
-      "ground_truth": {
-        "department": "technical",
-        "priority": "medium",
-        "action_type": "escalate"
-      },
-      "ground_truth_reason": "Product defect needs technical handling but is not as urgent as an outage."
-    },
-    {
-      "id": "H007",
-      "category_hint": "general",
-      "description": "Where do I export audit logs for our compliance review?",
-      "urgency": 1,
-      "customer_tier": "premium",
-      "time_waiting": 7,
-      "ground_truth": {
-        "department": "general",
-        "priority": "low",
-        "action_type": "resolve"
-      },
-      "ground_truth_reason": "Simple product guidance request."
-    },
-    {
-      "id": "H008",
-      "category_hint": "billing",
-      "description": "We removed 30 seats yesterday and need the prorated credit reflected on the next invoice.",
-      "urgency": 3,
       "customer_tier": "premium",
       "time_waiting": 60,
       "ground_truth": {
         "department": "billing",
+        "priority": "high",
+        "action_type": "resolve"
+      },
+      "ground_truth_reason": "Generated from CSV ticket 16 (Refund Request on Billing System). Route to billing; priority is high from the source severity and action is resolve from the source status and escalation signals."
+    },
+    {
+      "id": "H003",
+      "category_hint": "technical",
+      "description": "Does API Service support scheduled summary exports for individual teams, or is that only available on another plan?",
+      "urgency": 1,
+      "customer_tier": "free",
+      "time_waiting": 43,
+      "ground_truth": {
+        "department": "general",
+        "priority": "low",
+        "action_type": "resolve"
+      },
+      "ground_truth_reason": "Generated from CSV ticket 214 (Feature Request on API Service). Route to general; priority is low from the source severity and action is resolve from the source status and escalation signals."
+    },
+    {
+      "id": "H004",
+      "category_hint": "general",
+      "description": "Two-factor authentication codes are not arriving, so the team cannot complete sign-in to Payment Gateway.",
+      "urgency": 5,
+      "customer_tier": "free",
+      "time_waiting": 48,
+      "ground_truth": {
+        "department": "technical",
+        "priority": "high",
+        "action_type": "escalate"
+      },
+      "ground_truth_reason": "Generated from CSV ticket 41 (Security Concern on Payment Gateway). Route to technical; priority is high from the source severity and action is escalate from the source status and escalation signals."
+    },
+    {
+      "id": "H005",
+      "category_hint": "billing",
+      "description": "My payment for API Service looks wrong, but I am not sure which invoice or workspace is affected yet. It was billed through PayPal.",
+      "urgency": 3,
+      "customer_tier": "premium",
+      "time_waiting": 56,
+      "ground_truth": {
+        "department": "billing",
+        "priority": "medium",
+        "action_type": "request_info"
+      },
+      "ground_truth_reason": "Generated from CSV ticket 934 (Payment Problem on API Service). Route to billing; priority is medium from the source severity and action is request_info from the source status and escalation signals."
+    },
+    {
+      "id": "H006",
+      "category_hint": "technical",
+      "description": "Users can no longer access Analytics Dashboard; the account appears suspended after sign-in on Firefox for MacOS.",
+      "urgency": 3,
+      "customer_tier": "premium",
+      "time_waiting": 26,
+      "ground_truth": {
+        "department": "technical",
+        "priority": "medium",
+        "action_type": "escalate"
+      },
+      "ground_truth_reason": "Generated from CSV ticket 19 (Account Suspension on Analytics Dashboard). Route to technical; priority is medium from the source severity and action is escalate from the source status and escalation signals."
+    },
+    {
+      "id": "H007",
+      "category_hint": "general",
+      "description": "Does Mobile App support scheduled summary exports for small business teams, or is that only available on another plan?",
+      "urgency": 1,
+      "customer_tier": "premium",
+      "time_waiting": 70,
+      "ground_truth": {
+        "department": "general",
+        "priority": "low",
+        "action_type": "resolve"
+      },
+      "ground_truth_reason": "Generated from CSV ticket 215 (Feature Request on Mobile App). Route to general; priority is low from the source severity and action is resolve from the source status and escalation signals."
+    },
+    {
+      "id": "H008",
+      "category_hint": "billing",
+      "description": "My basic subscription for Analytics Dashboard was cancelled unexpectedly and I need clarification.",
+      "urgency": 3,
+      "customer_tier": "free",
+      "time_waiting": 30,
+      "ground_truth": {
+        "department": "billing",
         "priority": "medium",
         "action_type": "resolve"
       },
-      "ground_truth_reason": "Standard proration adjustment with enough information for billing to handle."
+      "ground_truth_reason": "Generated from CSV ticket 26 (Subscription Cancellation on Analytics Dashboard). Route to billing; priority is medium from the source severity and action is resolve from the source status and escalation signals."
     },
     {
       "id": "H009",
       "category_hint": "technical",
-      "description": "The payment succeeded in our bank app, but the subscription still shows suspended and our workspace is locked.",
+      "description": "The payment for E-commerce Store through Credit Card was deducted, but the transaction still shows failed and access is blocked.",
       "urgency": 4,
-      "customer_tier": "premium",
-      "time_waiting": 15,
+      "customer_tier": "free",
+      "time_waiting": 66,
       "ground_truth": {
         "department": "billing",
         "priority": "high",
         "action_type": "escalate"
       },
-      "ground_truth_reason": "Payment-account state mismatch is blocking service and should be treated as urgent billing work."
+      "ground_truth_reason": "Generated from CSV ticket 30 (Payment Problem on E-commerce Store). Route to billing; priority is high from the source severity and action is escalate from the source status and escalation signals."
     },
     {
       "id": "H010",
       "category_hint": "general",
-      "description": "The site feels slow for one teammate in Tokyo only, but I do not have browser or network details yet.",
-      "urgency": 2,
+      "description": "Web Portal feels very slow in Europe, but I do not know yet if it is specific to Edge on Linux.",
+      "urgency": 3,
       "customer_tier": "free",
-      "time_waiting": 12,
+      "time_waiting": 48,
       "ground_truth": {
         "department": "technical",
         "priority": "medium",
         "action_type": "request_info"
       },
-      "ground_truth_reason": "Likely technical, but more diagnostics are required before triage can proceed."
+      "ground_truth_reason": "Generated from CSV ticket 79 (Performance Issue on Web Portal). Route to technical; priority is medium from the source severity and action is request_info from the source status and escalation signals."
     }
   ],
   "arrival_schedule": [
@@ -158,30 +158,30 @@
         {
           "id": "H011",
           "category_hint": "general",
-          "description": "Webhook retries spiked to 100 percent failures right after our deploy and downstream orders are stuck.",
+          "description": "Two-factor authentication codes are not arriving, so the team cannot complete sign-in to Payment Gateway.",
           "urgency": 5,
-          "customer_tier": "premium",
-          "time_waiting": 3,
+          "customer_tier": "free",
+          "time_waiting": 8,
           "ground_truth": {
             "department": "technical",
             "priority": "high",
             "action_type": "escalate"
           },
-          "ground_truth_reason": "Production integration outage with business impact is critical."
+          "ground_truth_reason": "Generated from CSV ticket 53 (Security Concern on Payment Gateway). Route to technical; priority is high from the source severity and action is escalate from the source status and escalation signals."
         },
         {
           "id": "H012",
           "category_hint": "billing",
-          "description": "Can I change the invoice recipient email to our accounts payable inbox?",
+          "description": "Does E-commerce Store support scheduled summary exports for corporate teams, or is that only available on another plan?",
           "urgency": 1,
           "customer_tier": "free",
-          "time_waiting": 2,
+          "time_waiting": 103,
           "ground_truth": {
             "department": "general",
             "priority": "low",
             "action_type": "resolve"
           },
-          "ground_truth_reason": "Simple account administration request that does not need billing investigation."
+          "ground_truth_reason": "Generated from CSV ticket 220 (Feature Request on E-commerce Store). Route to general; priority is low from the source severity and action is resolve from the source status and escalation signals."
         }
       ]
     },
@@ -191,30 +191,30 @@
         {
           "id": "H013",
           "category_hint": "technical",
-          "description": "We were charged twice on the annual renewal for workspace Northwind.",
-          "urgency": 4,
-          "customer_tier": "premium",
-          "time_waiting": 8,
+          "description": "I need a refund for the recent Subscription Service charge on my Credit Card statement.",
+          "urgency": 5,
+          "customer_tier": "free",
+          "time_waiting": 98,
           "ground_truth": {
             "department": "billing",
             "priority": "high",
             "action_type": "resolve"
           },
-          "ground_truth_reason": "Duplicate charge is a billing issue with enough detail to correct directly."
+          "ground_truth_reason": "Generated from CSV ticket 40 (Refund Request on Subscription Service). Route to billing; priority is high from the source severity and action is resolve from the source status and escalation signals."
         },
         {
           "id": "H014",
           "category_hint": "general",
-          "description": "The Android app shows a blank screen after login for multiple users in our field team.",
+          "description": "Users can no longer access Web Portal; the account appears suspended after sign-in on Firefox for Windows.",
           "urgency": 4,
           "customer_tier": "free",
-          "time_waiting": 6,
+          "time_waiting": 105,
           "ground_truth": {
             "department": "technical",
             "priority": "high",
             "action_type": "escalate"
           },
-          "ground_truth_reason": "Multi-user mobile app failure needs technical escalation."
+          "ground_truth_reason": "Generated from CSV ticket 46 (Account Suspension on Web Portal). Route to technical; priority is high from the source severity and action is escalate from the source status and escalation signals."
         }
       ]
     },
@@ -224,30 +224,30 @@
         {
           "id": "H015",
           "category_hint": "billing",
-          "description": "Your API is suddenly throttling our paid traffic below the contract limit and checkout calls are timing out.",
+          "description": "Two-factor authentication codes are not arriving, so the team cannot complete sign-in to Billing System.",
           "urgency": 5,
-          "customer_tier": "premium",
-          "time_waiting": 1,
+          "customer_tier": "free",
+          "time_waiting": 86,
           "ground_truth": {
             "department": "technical",
             "priority": "high",
             "action_type": "escalate"
           },
-          "ground_truth_reason": "Contract-impacting API degradation is a critical technical incident."
+          "ground_truth_reason": "Generated from CSV ticket 71 (Security Concern on Billing System). Route to technical; priority is high from the source severity and action is escalate from the source status and escalation signals."
         },
         {
           "id": "H016",
           "category_hint": "general",
-          "description": "Procurement needs your W-9 today so we can finish vendor setup.",
+          "description": "My free subscription for Analytics Dashboard was cancelled unexpectedly and I need clarification.",
           "urgency": 2,
-          "customer_tier": "premium",
-          "time_waiting": 4,
+          "customer_tier": "free",
+          "time_waiting": 33,
           "ground_truth": {
             "department": "billing",
             "priority": "low",
             "action_type": "resolve"
           },
-          "ground_truth_reason": "Tax document request is low urgency and best routed through billing or finance operations."
+          "ground_truth_reason": "Generated from CSV ticket 37 (Subscription Cancellation on Analytics Dashboard). Route to billing; priority is low from the source severity and action is resolve from the source status and escalation signals."
         }
       ]
     },
@@ -256,31 +256,31 @@
       "tickets": [
         {
           "id": "H017",
-          "category_hint": "technical",
-          "description": "How do I hide archived projects from the default project view?",
-          "urgency": 1,
-          "customer_tier": "free",
-          "time_waiting": 2,
+          "category_hint": "billing",
+          "description": "Billing System feels very slow in Asia, but I do not know yet if it is specific to Edge on MacOS.",
+          "urgency": 3,
+          "customer_tier": "premium",
+          "time_waiting": 64,
           "ground_truth": {
-            "department": "general",
-            "priority": "low",
-            "action_type": "resolve"
+            "department": "technical",
+            "priority": "medium",
+            "action_type": "request_info"
           },
-          "ground_truth_reason": "Simple navigation question with an incorrect technical hint."
+          "ground_truth_reason": "Generated from CSV ticket 94 (Performance Issue on Billing System). Route to technical; priority is medium from the source severity and action is request_info from the source status and escalation signals."
         },
         {
           "id": "H018",
           "category_hint": "general",
-          "description": "My refund never came through, but I do not remember the invoice number or the card used.",
+          "description": "My payment for Payment Gateway looks wrong, but I am not sure which invoice or workspace is affected yet. It was billed through Credit Card.",
           "urgency": 3,
           "customer_tier": "free",
-          "time_waiting": 14,
+          "time_waiting": 13,
           "ground_truth": {
             "department": "billing",
             "priority": "medium",
             "action_type": "request_info"
           },
-          "ground_truth_reason": "Billing owns refunds, but the case lacks enough information to action."
+          "ground_truth_reason": "Generated from CSV ticket 1181 (Payment Problem on Payment Gateway). Route to billing; priority is medium from the source severity and action is request_info from the source status and escalation signals."
         }
       ]
     },
@@ -289,31 +289,31 @@
       "tickets": [
         {
           "id": "H019",
-          "category_hint": "billing",
-          "description": "Every CSV export in the admin dashboard is failing with a 500 error right now.",
+          "category_hint": "general",
+          "description": "Two-factor authentication codes are not arriving, so the team cannot complete sign-in to CRM Platform.",
           "urgency": 4,
           "customer_tier": "premium",
-          "time_waiting": 5,
+          "time_waiting": 76,
           "ground_truth": {
             "department": "technical",
             "priority": "high",
             "action_type": "escalate"
           },
-          "ground_truth_reason": "Repeatable server-side failure is technical and urgent."
+          "ground_truth_reason": "Generated from CSV ticket 73 (Security Concern on CRM Platform). Route to technical; priority is high from the source severity and action is escalate from the source status and escalation signals."
         },
         {
           "id": "H020",
-          "category_hint": "general",
-          "description": "Email notifications stopped for everyone in our organization after we changed branding settings.",
-          "urgency": 4,
-          "customer_tier": "premium",
-          "time_waiting": 7,
+          "category_hint": "technical",
+          "description": "The payment for API Service through PayPal was deducted, but the transaction still shows failed and access is blocked.",
+          "urgency": 5,
+          "customer_tier": "free",
+          "time_waiting": 37,
           "ground_truth": {
-            "department": "technical",
+            "department": "billing",
             "priority": "high",
             "action_type": "escalate"
           },
-          "ground_truth_reason": "Org-wide notification failure has clear technical ownership and strong urgency."
+          "ground_truth_reason": "Generated from CSV ticket 35 (Payment Problem on API Service). Route to billing; priority is high from the source severity and action is escalate from the source status and escalation signals."
         }
       ]
     },
@@ -323,30 +323,30 @@
         {
           "id": "H021",
           "category_hint": "technical",
-          "description": "Legal needs a copy of our signed DPA for this renewal review.",
+          "description": "Does Subscription Service support scheduled summary exports for individual teams, or is that only available on another plan?",
           "urgency": 2,
           "customer_tier": "premium",
-          "time_waiting": 3,
+          "time_waiting": 50,
           "ground_truth": {
             "department": "general",
-            "priority": "low",
+            "priority": "medium",
             "action_type": "resolve"
           },
-          "ground_truth_reason": "Administrative document request, not a technical issue."
+          "ground_truth_reason": "Generated from CSV ticket 11 (Feature Request on Subscription Service). Route to general; priority is medium from the source severity and action is resolve from the source status and escalation signals."
         },
         {
           "id": "H022",
           "category_hint": "billing",
-          "description": "We need next month's invoice split by cost center before finance closes the books.",
+          "description": "We cannot log in to E-commerce Store with valid credentials on Safari for MacOS.",
           "urgency": 3,
           "customer_tier": "premium",
-          "time_waiting": 9,
+          "time_waiting": 58,
           "ground_truth": {
-            "department": "billing",
+            "department": "technical",
             "priority": "medium",
             "action_type": "escalate"
           },
-          "ground_truth_reason": "Complex invoice reconfiguration belongs to billing and likely needs specialized handling."
+          "ground_truth_reason": "Generated from CSV ticket 20 (Login Issue on E-commerce Store). Route to technical; priority is medium from the source severity and action is escalate from the source status and escalation signals."
         }
       ]
     },
@@ -356,30 +356,30 @@
         {
           "id": "H023",
           "category_hint": "general",
-          "description": "Password reset emails are not arriving for multiple admins, so they cannot regain access.",
-          "urgency": 4,
+          "description": "I need a refund for the recent Billing System charge on my Credit Card statement.",
+          "urgency": 3,
+          "customer_tier": "premium",
+          "time_waiting": 7,
+          "ground_truth": {
+            "department": "billing",
+            "priority": "medium",
+            "action_type": "resolve"
+          },
+          "ground_truth_reason": "Generated from CSV ticket 28 (Refund Request on Billing System). Route to billing; priority is medium from the source severity and action is resolve from the source status and escalation signals."
+        },
+        {
+          "id": "H024",
+          "category_hint": "billing",
+          "description": "We cannot log in to Web Portal with valid credentials on Safari for Android.",
+          "urgency": 5,
           "customer_tier": "free",
-          "time_waiting": 4,
+          "time_waiting": 42,
           "ground_truth": {
             "department": "technical",
             "priority": "high",
             "action_type": "escalate"
           },
-          "ground_truth_reason": "Multi-user account recovery failure is a technical escalation."
-        },
-        {
-          "id": "H024",
-          "category_hint": "technical",
-          "description": "Our account still says overdue even though the ACH payment cleared yesterday.",
-          "urgency": 4,
-          "customer_tier": "premium",
-          "time_waiting": 10,
-          "ground_truth": {
-            "department": "billing",
-            "priority": "high",
-            "action_type": "escalate"
-          },
-          "ground_truth_reason": "Payment status mismatch is blocking billing state and should be handled urgently."
+          "ground_truth_reason": "Generated from CSV ticket 85 (Login Issue on Web Portal). Route to technical; priority is high from the source severity and action is escalate from the source status and escalation signals."
         }
       ]
     }
