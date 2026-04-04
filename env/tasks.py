@@ -19,6 +19,13 @@ def load_scenario(name: str = "easy") -> Scenario:
     return Scenario.model_validate(payload)
 
 
+def scenario_names() -> List[str]:
+    discovered = {path.stem for path in TASKS_DIR.glob("*.json")}
+    canonical = [name for name in ["easy", "medium", "hard"] if name in discovered]
+    extras = sorted(discovered - set(canonical))
+    return canonical + extras
+
+
 def public_ticket_view(ticket: LabeledTicket) -> Ticket:
     return Ticket.model_validate(_model_to_dict(ticket))
 
