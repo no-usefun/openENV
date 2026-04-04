@@ -16,7 +16,6 @@ dist/
 # Virtual Environment
 # -----------------------------
 venv/
-ENV/
 
 # -----------------------------
 # PyCharm / IDE
