@@ -1,0 +1,85 @@
+# -----------------------------
+# Python
+# -----------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# -----------------------------
+# Virtual Environment
+# -----------------------------
+venv/
+env/
+ENV/
+
+# -----------------------------
+# PyCharm / IDE
+# -----------------------------
+.idea/
+*.iml
+
+# VS Code (optional)
+.vscode/
+
+# -----------------------------
+# Logs
+# -----------------------------
+*.log
+
+# -----------------------------
+# Environment Variables / Secrets
+# -----------------------------
+.env
+.env.*
+*.env
+
+# -----------------------------
+# OS Files
+# -----------------------------
+.DS_Store
+Thumbs.db
+
+# -----------------------------
+# Jupyter (if used)
+# -----------------------------
+.ipynb_checkpoints/
+
+# -----------------------------
+# Temporary / Cache
+# -----------------------------
+*.tmp
+*.temp
+.cache/
+
+# -----------------------------
+# Hugging Face / Model cache (optional)
+# -----------------------------
+hf_cache/
+.cache/huggingface/
+
+# -----------------------------
+# Docker
+# -----------------------------
+*.pid
+*.seed
+
+# -----------------------------
+# Coverage / Testing
+# -----------------------------
+.coverage
+htmlcov/
+.pytest_cache/
+
+# -----------------------------
+# Local outputs (if you log runs)
+# -----------------------------
+outputs/
+results/
+logs/
