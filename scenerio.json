@@ -1,0 +1,73 @@
+[
+  {
+    "id": "T001",
+    "category_hint": "billing",
+    "description": "I was charged twice for my subscription this month. Please refund the duplicate charge.",
+    "urgency": 3,
+    "customer_tier": "premium",
+    "time_waiting": 10,
+    "ground_truth": {
+      "department": "billing",
+      "priority": "medium",
+      "action_type": "resolve"
+    }
+  },
+  {
+    "id": "T002",
+    "category_hint": "technical",
+    "description": "App crashes every time I try to export a PDF. Happens on both Mac and Windows.",
+    "urgency": 4,
+    "customer_tier": "free",
+    "time_waiting": 45,
+    "ground_truth": {
+      "department": "technical",
+      "priority": "high",
+      "action_type": "escalate"
+    }
+  },
+  {
+    "id": "T003",
+    "category_hint": "general",
+    "description": "How do I change my account email address?",
+    "urgency": 1,
+    "customer_tier": "free",
+    "time_waiting": 5,
+    "ground_truth": {
+      "department": "general",
+      "priority": "low",
+      "action_type": "resolve"
+    }
+  }
+,
+
+
+  {
+    "id": "T008",
+    "category_hint": "general",
+    "description": "My team cannot access the API since yesterday. We are losing revenue every hour.",
+    "urgency": 5,
+    "customer_tier": "premium",
+    "time_waiting": 120,
+    "ground_truth": {
+      "department": "technical",
+      "priority": "high",
+      "action_type": "escalate"
+    }
+  }
+
+,
+
+  {
+    "id": "T021",
+    "category_hint": "billing",
+    "description": "System keeps logging me out. Also I think I was overcharged but not sure.",
+    "urgency": 2,
+    "customer_tier": "free",
+    "time_waiting": 200,
+    "ground_truth": {
+      "department": "technical",
+      "priority": "medium",
+      "action_type": "request_info"
+    }
+  }
+]
