@@ -3,7 +3,7 @@
   "difficulty": "hard",
   "description": "Dataset-backed triage with high hint noise, continuous arrivals, and fewer steps than tickets so the agent must trade off impact.",
   "start_time": 0,
-  "max_steps": 16,
+  "max_steps": 24,
   "sla_targets_steps": {
     "high": 2,
     "medium": 5,

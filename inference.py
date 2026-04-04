@@ -4,6 +4,7 @@ import os
 from typing import Any, Dict, List, Optional, Tuple
 
 from agent.baseline import choose_action as heuristic_choose_action
+from agent.baseline import choose_action_from_observation as heuristic_choose_action_from_observation
 from env.core import TicketEnv
 from env.models import Action, Observation
 from env.tasks import scenario_names
@@ -30,8 +31,14 @@ Allowed labels:
 
 Rules:
 - Prefer urgent and long-waiting tickets when tradeoffs exist.
+- Route from the issue symptom, not the product name. A product called "Billing System" can still be a technical ticket.
+- Feature, plan, and how-to questions are usually general unless they clearly mention a billing dispute.
+- Refunds, charges, renewals, unpaid workspaces, and payment failures are usually billing.
+- Login failures, 2FA issues, account suspension, crashes, bugs, sync failures, and severe slowness are usually technical.
 - Use request_info only when the ticket clearly lacks enough detail to resolve.
+- Use request_info for vague tickets such as "not sure which invoice", "do not know if it is browser-specific", or similarly missing diagnostic detail.
 - Use escalate for outages, bugs, access failures, or complex issues that need specialist handling.
+- For billing, use resolve by default unless the description says the payment problem is actively blocking access or the whole team.
 - Return JSON only, with no markdown fences or explanation.
 """
 
@@ -80,10 +87,13 @@ def choose_action_with_llm(client: Any, model_name: str, observation: Observatio
 
     try:
         action = Action.model_validate(json.loads(extract_json_object(content)))
+        pending_ids = {ticket.id for ticket in observation.pending_tickets}
+        if action.ticket_id not in pending_ids:
+            raise ValueError("Model selected a ticket that is not pending.")
         return action, False, content
     except Exception:
         # Keep the baseline reproducible and non-brittle even if the model emits malformed JSON.
-        fallback = heuristic_choose_action(observation.current_ticket)
+        fallback = heuristic_choose_action_from_observation(observation)
         return fallback, True, content
 
 
@@ -117,14 +127,18 @@ def run_episode(
     llm_calls = 0
     fallback_actions = 0
     trace: List[Dict[str, Any]] = []
+    first_seen_at: Dict[str, int] = {}
 
     while not done:
+        for pending_ticket in state.pending_tickets:
+            first_seen_at.setdefault(pending_ticket.id, state.current_time)
+
         ticket = state.current_ticket
         if ticket is None:
             break
 
         if heuristic_only:
-            action = heuristic_choose_action(ticket)
+            action = heuristic_choose_action_from_observation(state, first_seen_at)
             raw_response = None
             used_fallback = False
         else:
