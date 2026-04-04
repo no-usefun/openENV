@@ -1,0 +1,387 @@
+{
+  "scenario_id": "support-triage-hard-v1",
+  "difficulty": "hard",
+  "description": "High hint noise, continuous arrivals, and fewer steps than total tickets so the agent must triage for impact.",
+  "start_time": 0,
+  "max_steps": 16,
+  "sla_targets_steps": {
+    "high": 2,
+    "medium": 5,
+    "low": 999
+  },
+  "initial_tickets": [
+    {
+      "id": "H001",
+      "category_hint": "billing",
+      "description": "EU customers cannot complete checkout because the payment step spins forever for every order.",
+      "urgency": 5,
+      "customer_tier": "premium",
+      "time_waiting": 25,
+      "ground_truth": {
+        "department": "technical",
+        "priority": "high",
+        "action_type": "escalate"
+      },
+      "ground_truth_reason": "Checkout outage is a critical technical incident even though the symptom appears in billing."
+    },
+    {
+      "id": "H002",
+      "category_hint": "general",
+      "description": "We canceled last month but still got charged again on this morning's renewal.",
+      "urgency": 4,
+      "customer_tier": "free",
+      "time_waiting": 90,
+      "ground_truth": {
+        "department": "billing",
+        "priority": "high",
+        "action_type": "resolve"
+      },
+      "ground_truth_reason": "Wrongful renewal charge is urgent enough to prioritize and can be corrected directly by billing."
+    },
+    {
+      "id": "H003",
+      "category_hint": "technical",
+      "description": "Procurement asked for your certificate of insurance before they can finish vendor review.",
+      "urgency": 2,
+      "customer_tier": "premium",
+      "time_waiting": 18,
+      "ground_truth": {
+        "department": "general",
+        "priority": "low",
+        "action_type": "resolve"
+      },
+      "ground_truth_reason": "Administrative request with a misleading technical hint."
+    },
+    {
+      "id": "H004",
+      "category_hint": "general",
+      "description": "SSO login has failed for every new employee since this morning. Existing users can still sign in.",
+      "urgency": 5,
+      "customer_tier": "premium",
+      "time_waiting": 40,
+      "ground_truth": {
+        "department": "technical",
+        "priority": "high",
+        "action_type": "escalate"
+      },
+      "ground_truth_reason": "Organization-wide onboarding blocker requires urgent technical escalation."
+    },
+    {
+      "id": "H005",
+      "category_hint": "billing",
+      "description": "My invoice total changed, maybe because of taxes, but I am not sure which invoice is wrong.",
+      "urgency": 2,
+      "customer_tier": "free",
+      "time_waiting": 110,
+      "ground_truth": {
+        "department": "billing",
+        "priority": "medium",
+        "action_type": "request_info"
+      },
+      "ground_truth_reason": "Billing owns the issue, but the ticket lacks enough identifying detail to resolve."
+    },
+    {
+      "id": "H006",
+      "category_hint": "technical",
+      "description": "The desktop app crashes every time I open the analytics tab after the latest update.",
+      "urgency": 3,
+      "customer_tier": "free",
+      "time_waiting": 22,
+      "ground_truth": {
+        "department": "technical",
+        "priority": "medium",
+        "action_type": "escalate"
+      },
+      "ground_truth_reason": "Product defect needs technical handling but is not as urgent as an outage."
+    },
+    {
+      "id": "H007",
+      "category_hint": "general",
+      "description": "Where do I export audit logs for our compliance review?",
+      "urgency": 1,
+      "customer_tier": "premium",
+      "time_waiting": 7,
+      "ground_truth": {
+        "department": "general",
+        "priority": "low",
+        "action_type": "resolve"
+      },
+      "ground_truth_reason": "Simple product guidance request."
+    },
+    {
+      "id": "H008",
+      "category_hint": "billing",
+      "description": "We removed 30 seats yesterday and need the prorated credit reflected on the next invoice.",
+      "urgency": 3,
+      "customer_tier": "premium",
+      "time_waiting": 60,
+      "ground_truth": {
+        "department": "billing",
+        "priority": "medium",
+        "action_type": "resolve"
+      },
+      "ground_truth_reason": "Standard proration adjustment with enough information for billing to handle."
+    },
+    {
+      "id": "H009",
+      "category_hint": "technical",
+      "description": "The payment succeeded in our bank app, but the subscription still shows suspended and our workspace is locked.",
+      "urgency": 4,
+      "customer_tier": "premium",
+      "time_waiting": 15,
+      "ground_truth": {
+        "department": "billing",
+        "priority": "high",
+        "action_type": "escalate"
+      },
+      "ground_truth_reason": "Payment-account state mismatch is blocking service and should be treated as urgent billing work."
+    },
+    {
+      "id": "H010",
+      "category_hint": "general",
+      "description": "The site feels slow for one teammate in Tokyo only, but I do not have browser or network details yet.",
+      "urgency": 2,
+      "customer_tier": "free",
+      "time_waiting": 12,
+      "ground_truth": {
+        "department": "technical",
+        "priority": "medium",
+        "action_type": "request_info"
+      },
+      "ground_truth_reason": "Likely technical, but more diagnostics are required before triage can proceed."
+    }
+  ],
+  "arrival_schedule": [
+    {
+      "time": 1,
+      "tickets": [
+        {
+          "id": "H011",
+          "category_hint": "general",
+          "description": "Webhook retries spiked to 100 percent failures right after our deploy and downstream orders are stuck.",
+          "urgency": 5,
+          "customer_tier": "premium",
+          "time_waiting": 3,
+          "ground_truth": {
+            "department": "technical",
+            "priority": "high",
+            "action_type": "escalate"
+          },
+          "ground_truth_reason": "Production integration outage with business impact is critical."
+        },
+        {
+          "id": "H012",
+          "category_hint": "billing",
+          "description": "Can I change the invoice recipient email to our accounts payable inbox?",
+          "urgency": 1,
+          "customer_tier": "free",
+          "time_waiting": 2,
+          "ground_truth": {
+            "department": "general",
+            "priority": "low",
+            "action_type": "resolve"
+          },
+          "ground_truth_reason": "Simple account administration request that does not need billing investigation."
+        }
+      ]
+    },
+    {
+      "time": 2,
+      "tickets": [
+        {
+          "id": "H013",
+          "category_hint": "technical",
+          "description": "We were charged twice on the annual renewal for workspace Northwind.",
+          "urgency": 4,
+          "customer_tier": "premium",
+          "time_waiting": 8,
+          "ground_truth": {
+            "department": "billing",
+            "priority": "high",
+            "action_type": "resolve"
+          },
+          "ground_truth_reason": "Duplicate charge is a billing issue with enough detail to correct directly."
+        },
+        {
+          "id": "H014",
+          "category_hint": "general",
+          "description": "The Android app shows a blank screen after login for multiple users in our field team.",
+          "urgency": 4,
+          "customer_tier": "free",
+          "time_waiting": 6,
+          "ground_truth": {
+            "department": "technical",
+            "priority": "high",
+            "action_type": "escalate"
+          },
+          "ground_truth_reason": "Multi-user mobile app failure needs technical escalation."
+        }
+      ]
+    },
+    {
+      "time": 3,
+      "tickets": [
+        {
+          "id": "H015",
+          "category_hint": "billing",
+          "description": "Your API is suddenly throttling our paid traffic below the contract limit and checkout calls are timing out.",
+          "urgency": 5,
+          "customer_tier": "premium",
+          "time_waiting": 1,
+          "ground_truth": {
+            "department": "technical",
+            "priority": "high",
+            "action_type": "escalate"
+          },
+          "ground_truth_reason": "Contract-impacting API degradation is a critical technical incident."
+        },
+        {
+          "id": "H016",
+          "category_hint": "general",
+          "description": "Procurement needs your W-9 today so we can finish vendor setup.",
+          "urgency": 2,
+          "customer_tier": "premium",
+          "time_waiting": 4,
+          "ground_truth": {
+            "department": "billing",
+            "priority": "low",
+            "action_type": "resolve"
+          },
+          "ground_truth_reason": "Tax document request is low urgency and best routed through billing or finance operations."
+        }
+      ]
+    },
+    {
+      "time": 4,
+      "tickets": [
+        {
+          "id": "H017",
+          "category_hint": "technical",
+          "description": "How do I hide archived projects from the default project view?",
+          "urgency": 1,
+          "customer_tier": "free",
+          "time_waiting": 2,
+          "ground_truth": {
+            "department": "general",
+            "priority": "low",
+            "action_type": "resolve"
+          },
+          "ground_truth_reason": "Simple navigation question with an incorrect technical hint."
+        },
+        {
+          "id": "H018",
+          "category_hint": "general",
+          "description": "My refund never came through, but I do not remember the invoice number or the card used.",
+          "urgency": 3,
+          "customer_tier": "free",
+          "time_waiting": 14,
+          "ground_truth": {
+            "department": "billing",
+            "priority": "medium",
+            "action_type": "request_info"
+          },
+          "ground_truth_reason": "Billing owns refunds, but the case lacks enough information to action."
+        }
+      ]
+    },
+    {
+      "time": 5,
+      "tickets": [
+        {
+          "id": "H019",
+          "category_hint": "billing",
+          "description": "Every CSV export in the admin dashboard is failing with a 500 error right now.",
+          "urgency": 4,
+          "customer_tier": "premium",
+          "time_waiting": 5,
+          "ground_truth": {
+            "department": "technical",
+            "priority": "high",
+            "action_type": "escalate"
+          },
+          "ground_truth_reason": "Repeatable server-side failure is technical and urgent."
+        },
+        {
+          "id": "H020",
+          "category_hint": "general",
+          "description": "Email notifications stopped for everyone in our organization after we changed branding settings.",
+          "urgency": 4,
+          "customer_tier": "premium",
+          "time_waiting": 7,
+          "ground_truth": {
+            "department": "technical",
+            "priority": "high",
+            "action_type": "escalate"
+          },
+          "ground_truth_reason": "Org-wide notification failure has clear technical ownership and strong urgency."
+        }
+      ]
+    },
+    {
+      "time": 6,
+      "tickets": [
+        {
+          "id": "H021",
+          "category_hint": "technical",
+          "description": "Legal needs a copy of our signed DPA for this renewal review.",
+          "urgency": 2,
+          "customer_tier": "premium",
+          "time_waiting": 3,
+          "ground_truth": {
+            "department": "general",
+            "priority": "low",
+            "action_type": "resolve"
+          },
+          "ground_truth_reason": "Administrative document request, not a technical issue."
+        },
+        {
+          "id": "H022",
+          "category_hint": "billing",
+          "description": "We need next month's invoice split by cost center before finance closes the books.",
+          "urgency": 3,
+          "customer_tier": "premium",
+          "time_waiting": 9,
+          "ground_truth": {
+            "department": "billing",
+            "priority": "medium",
+            "action_type": "escalate"
+          },
+          "ground_truth_reason": "Complex invoice reconfiguration belongs to billing and likely needs specialized handling."
+        }
+      ]
+    },
+    {
+      "time": 7,
+      "tickets": [
+        {
+          "id": "H023",
+          "category_hint": "general",
+          "description": "Password reset emails are not arriving for multiple admins, so they cannot regain access.",
+          "urgency": 4,
+          "customer_tier": "free",
+          "time_waiting": 4,
+          "ground_truth": {
+            "department": "technical",
+            "priority": "high",
+            "action_type": "escalate"
+          },
+          "ground_truth_reason": "Multi-user account recovery failure is a technical escalation."
+        },
+        {
+          "id": "H024",
+          "category_hint": "technical",
+          "description": "Our account still says overdue even though the ACH payment cleared yesterday.",
+          "urgency": 4,
+          "customer_tier": "premium",
+          "time_waiting": 10,
+          "ground_truth": {
+            "department": "billing",
+            "priority": "high",
+            "action_type": "escalate"
+          },
+          "ground_truth_reason": "Payment status mismatch is blocking billing state and should be handled urgently."
+        }
+      ]
+    }
+  ]
+}

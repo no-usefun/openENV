@@ -1,0 +1,99 @@
+{
+  "scenario_id": "support-triage-easy-v1",
+  "difficulty": "easy",
+  "description": "Mostly clean signals, no new arrivals, and enough information on most tickets to test basic routing.",
+  "start_time": 0,
+  "max_steps": 8,
+  "sla_targets_steps": {
+    "high": 2,
+    "medium": 5,
+    "low": 999
+  },
+  "initial_tickets": [
+    {
+      "id": "E001",
+      "category_hint": "billing",
+      "description": "I was charged twice for my Pro subscription this month. Please refund the duplicate charge on the same card ending in 4421.",
+      "urgency": 3,
+      "customer_tier": "premium",
+      "time_waiting": 18,
+      "ground_truth": {
+        "department": "billing",
+        "priority": "medium",
+        "action_type": "resolve"
+      },
+      "ground_truth_reason": "Duplicate charge with enough account detail for frontline billing to handle directly."
+    },
+    {
+      "id": "E002",
+      "category_hint": "technical",
+      "description": "The app crashes every time I export a PDF. It happens on both Mac and Windows for the same report.",
+      "urgency": 4,
+      "customer_tier": "free",
+      "time_waiting": 42,
+      "ground_truth": {
+        "department": "technical",
+        "priority": "high",
+        "action_type": "escalate"
+      },
+      "ground_truth_reason": "Repeatable product bug that needs engineering attention and should be treated as high priority."
+    },
+    {
+      "id": "E003",
+      "category_hint": "general",
+      "description": "How do I change the email address on my account?",
+      "urgency": 1,
+      "customer_tier": "free",
+      "time_waiting": 6,
+      "ground_truth": {
+        "department": "general",
+        "priority": "low",
+        "action_type": "resolve"
+      },
+      "ground_truth_reason": "Simple how-to question that can be answered immediately."
+    },
+    {
+      "id": "E004",
+      "category_hint": "billing",
+      "description": "Can you resend my March invoice with the company VAT number on it? Finance needs it for bookkeeping.",
+      "urgency": 2,
+      "customer_tier": "premium",
+      "time_waiting": 14,
+      "ground_truth": {
+        "department": "billing",
+        "priority": "low",
+        "action_type": "resolve"
+      },
+      "ground_truth_reason": "Straightforward invoice request with no ambiguity."
+    },
+    {
+      "id": "E005",
+      "category_hint": "billing",
+      "description": "My bill looks higher than usual, but I am not sure which workspace or invoice changed. Can someone check?",
+      "urgency": 2,
+      "customer_tier": "free",
+      "time_waiting": 31,
+      "ground_truth": {
+        "department": "billing",
+        "priority": "medium",
+        "action_type": "request_info"
+      },
+      "ground_truth_reason": "Billing is the right team, but the ticket lacks the invoice or workspace details needed to resolve it."
+    },
+    {
+      "id": "E006",
+      "category_hint": "technical",
+      "description": "Our admins have been locked out of the admin console since enabling SSO this morning. Nobody on the team can sign in.",
+      "urgency": 5,
+      "customer_tier": "premium",
+      "time_waiting": 55,
+      "ground_truth": {
+        "department": "technical",
+        "priority": "high",
+        "action_type": "escalate"
+      },
+      "ground_truth_reason": "Organization-wide access outage for a premium customer requires urgent technical escalation."
+    }
+  ],
+  "arrival_schedule": []
+}
