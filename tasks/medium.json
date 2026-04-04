@@ -1,0 +1,194 @@
+{
+  "scenario_id": "support-triage-medium-v1",
+  "difficulty": "medium",
+  "description": "Noisier hints, staged new arrivals, and enough urgent work to force prioritization decisions.",
+  "start_time": 0,
+  "max_steps": 12,
+  "sla_targets_steps": {
+    "high": 2,
+    "medium": 5,
+    "low": 999
+  },
+  "initial_tickets": [
+    {
+      "id": "M001",
+      "category_hint": "general",
+      "description": "Our annual plan renewed overnight even though I thought auto-renew was off. Please refund it if possible.",
+      "urgency": 3,
+      "customer_tier": "premium",
+      "time_waiting": 82,
+      "ground_truth": {
+        "department": "billing",
+        "priority": "medium",
+        "action_type": "resolve"
+      },
+      "ground_truth_reason": "The hint is misleading, but this is a standard billing renewal dispute with enough context to act."
+    },
+    {
+      "id": "M002",
+      "category_hint": "billing",
+      "description": "Our whole team is locked out because every 2FA code is being rejected after today’s login policy change.",
+      "urgency": 4,
+      "customer_tier": "premium",
+      "time_waiting": 35,
+      "ground_truth": {
+        "department": "technical",
+        "priority": "high",
+        "action_type": "escalate"
+      },
+      "ground_truth_reason": "Access failure for an entire team is a technical incident despite the noisy billing hint."
+    },
+    {
+      "id": "M003",
+      "category_hint": "technical",
+      "description": "Where can I download your data processing addendum for our records?",
+      "urgency": 1,
+      "customer_tier": "free",
+      "time_waiting": 12,
+      "ground_truth": {
+        "department": "general",
+        "priority": "low",
+        "action_type": "resolve"
+      },
+      "ground_truth_reason": "Documentation request with a wrong hint and no technical troubleshooting required."
+    },
+    {
+      "id": "M004",
+      "category_hint": "general",
+      "description": "Webhook deliveries started returning 500 for every event right after yesterday's release.",
+      "urgency": 4,
+      "customer_tier": "free",
+      "time_waiting": 21,
+      "ground_truth": {
+        "department": "technical",
+        "priority": "high",
+        "action_type": "escalate"
+      },
+      "ground_truth_reason": "Production integration failures are technical and time-sensitive."
+    },
+    {
+      "id": "M005",
+      "category_hint": "billing",
+      "description": "My invoice amount looks wrong, but I do not know which subscription changed or when it happened.",
+      "urgency": 2,
+      "customer_tier": "free",
+      "time_waiting": 96,
+      "ground_truth": {
+        "department": "billing",
+        "priority": "medium",
+        "action_type": "request_info"
+      },
+      "ground_truth_reason": "Billing owns it, but key information is missing so requesting more detail is the correct action."
+    },
+    {
+      "id": "M006",
+      "category_hint": "technical",
+      "description": "We reduced our workspace from 12 seats to 8 last week, but the renewal still charged us for 12.",
+      "urgency": 3,
+      "customer_tier": "premium",
+      "time_waiting": 48,
+      "ground_truth": {
+        "department": "billing",
+        "priority": "medium",
+        "action_type": "resolve"
+      },
+      "ground_truth_reason": "Seat-count billing mismatch is owned by billing and can be corrected from the ticket."
+    },
+    {
+      "id": "M007",
+      "category_hint": "general",
+      "description": "How do I invite another teammate to the workspace?",
+      "urgency": 2,
+      "customer_tier": "free",
+      "time_waiting": 8,
+      "ground_truth": {
+        "department": "general",
+        "priority": "low",
+        "action_type": "resolve"
+      },
+      "ground_truth_reason": "Simple product usage guidance with low urgency."
+    },
+    {
+      "id": "M008",
+      "category_hint": "billing",
+      "description": "The mobile app just spins forever on startup after the latest update.",
+      "urgency": 3,
+      "customer_tier": "free",
+      "time_waiting": 27,
+      "ground_truth": {
+        "department": "technical",
+        "priority": "medium",
+        "action_type": "escalate"
+      },
+      "ground_truth_reason": "Client-side startup bug belongs to technical support even though the hint is wrong."
+    }
+  ],
+  "arrival_schedule": [
+    {
+      "time": 2,
+      "tickets": [
+        {
+          "id": "M009",
+          "category_hint": "general",
+          "description": "Our production API started returning 401 for valid keys right after key rotation. Checkout is failing.",
+          "urgency": 5,
+          "customer_tier": "premium",
+          "time_waiting": 5,
+          "ground_truth": {
+            "department": "technical",
+            "priority": "high",
+            "action_type": "escalate"
+          },
+          "ground_truth_reason": "Revenue-impacting authentication outage is critical and needs technical escalation."
+        },
+        {
+          "id": "M010",
+          "category_hint": "technical",
+          "description": "My card was charged, but the workspace still shows unpaid and all paid features are locked.",
+          "urgency": 4,
+          "customer_tier": "premium",
+          "time_waiting": 15,
+          "ground_truth": {
+            "department": "billing",
+            "priority": "high",
+            "action_type": "escalate"
+          },
+          "ground_truth_reason": "Billing/payment sync issue is blocking account access and should be handled urgently."
+        }
+      ]
+    },
+    {
+      "time": 4,
+      "tickets": [
+        {
+          "id": "M011",
+          "category_hint": "billing",
+          "description": "Can you explain the difference between the Business and Enterprise plans before we upgrade?",
+          "urgency": 1,
+          "customer_tier": "premium",
+          "time_waiting": 3,
+          "ground_truth": {
+            "department": "general",
+            "priority": "low",
+            "action_type": "resolve"
+          },
+          "ground_truth_reason": "This is a general product question despite the billing hint."
+        },
+        {
+          "id": "M012",
+          "category_hint": "general",
+          "description": "Reports are very slow for one user in our org, but I do not know if it is browser-specific yet.",
+          "urgency": 2,
+          "customer_tier": "free",
+          "time_waiting": 10,
+          "ground_truth": {
+            "department": "technical",
+            "priority": "medium",
+            "action_type": "request_info"
+          },
+          "ground_truth_reason": "Technical ownership is clear, but more diagnostics are needed before the issue can be worked."
+        }
+      ]
+    }
+  ]
+}
