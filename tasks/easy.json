@@ -1,7 +1,7 @@
 {
   "scenario_id": "support-triage-easy-v1",
   "difficulty": "easy",
-  "description": "Mostly clean signals, no new arrivals, and enough information on most tickets to test basic routing.",
+  "description": "Dataset-backed triage with mostly accurate hints, no arrivals, and enough clarity to test basic routing.",
   "start_time": 0,
   "max_steps": 8,
   "sla_targets_steps": {
@@ -13,86 +13,86 @@
     {
       "id": "E001",
       "category_hint": "billing",
-      "description": "I was charged twice for my Pro subscription this month. Please refund the duplicate charge on the same card ending in 4421.",
+      "description": "My enterprise subscription for Payment Gateway was cancelled unexpectedly and I need clarification.",
       "urgency": 3,
       "customer_tier": "premium",
-      "time_waiting": 18,
+      "time_waiting": 40,
       "ground_truth": {
         "department": "billing",
         "priority": "medium",
         "action_type": "resolve"
       },
-      "ground_truth_reason": "Duplicate charge with enough account detail for frontline billing to handle directly."
+      "ground_truth_reason": "Generated from CSV ticket 4 (Subscription Cancellation on Payment Gateway). Route to billing; priority is medium from the source severity and action is resolve from the source status and escalation signals."
     },
     {
       "id": "E002",
       "category_hint": "technical",
-      "description": "The app crashes every time I export a PDF. It happens on both Mac and Windows for the same report.",
+      "description": "Users can no longer access Web Portal; the account appears suspended after sign-in on Edge for MacOS.",
       "urgency": 4,
       "customer_tier": "free",
-      "time_waiting": 42,
+      "time_waiting": 46,
       "ground_truth": {
         "department": "technical",
         "priority": "high",
         "action_type": "escalate"
       },
-      "ground_truth_reason": "Repeatable product bug that needs engineering attention and should be treated as high priority."
+      "ground_truth_reason": "Generated from CSV ticket 1 (Account Suspension on Web Portal). Route to technical; priority is high from the source severity and action is escalate from the source status and escalation signals."
     },
     {
       "id": "E003",
       "category_hint": "general",
-      "description": "How do I change the email address on my account?",
+      "description": "Does Web Portal support scheduled summary exports for individual teams, or is that only available on another plan?",
       "urgency": 1,
-      "customer_tier": "free",
-      "time_waiting": 6,
+      "customer_tier": "premium",
+      "time_waiting": 102,
       "ground_truth": {
         "department": "general",
         "priority": "low",
         "action_type": "resolve"
       },
-      "ground_truth_reason": "Simple how-to question that can be answered immediately."
+      "ground_truth_reason": "Generated from CSV ticket 27 (Feature Request on Web Portal). Route to general; priority is low from the source severity and action is resolve from the source status and escalation signals."
     },
     {
       "id": "E004",
       "category_hint": "billing",
-      "description": "Can you resend my March invoice with the company VAT number on it? Finance needs it for bookkeeping.",
+      "description": "I need a refund for the recent Mobile App charge on my Crypto statement.",
       "urgency": 2,
       "customer_tier": "premium",
-      "time_waiting": 14,
+      "time_waiting": 99,
       "ground_truth": {
         "department": "billing",
         "priority": "low",
         "action_type": "resolve"
       },
-      "ground_truth_reason": "Straightforward invoice request with no ambiguity."
+      "ground_truth_reason": "Generated from CSV ticket 18 (Refund Request on Mobile App). Route to billing; priority is low from the source severity and action is resolve from the source status and escalation signals."
     },
     {
       "id": "E005",
       "category_hint": "billing",
-      "description": "My bill looks higher than usual, but I am not sure which workspace or invoice changed. Can someone check?",
-      "urgency": 2,
-      "customer_tier": "free",
-      "time_waiting": 31,
+      "description": "My payment for E-commerce Store looks wrong, but I am not sure which invoice or workspace is affected yet. It was billed through Crypto.",
+      "urgency": 3,
+      "customer_tier": "premium",
+      "time_waiting": 37,
       "ground_truth": {
         "department": "billing",
         "priority": "medium",
         "action_type": "request_info"
       },
-      "ground_truth_reason": "Billing is the right team, but the ticket lacks the invoice or workspace details needed to resolve it."
+      "ground_truth_reason": "Generated from CSV ticket 318 (Payment Problem on E-commerce Store). Route to billing; priority is medium from the source severity and action is request_info from the source status and escalation signals."
     },
     {
       "id": "E006",
       "category_hint": "technical",
-      "description": "Our admins have been locked out of the admin console since enabling SSO this morning. Nobody on the team can sign in.",
+      "description": "Users can no longer access Cloud Storage; the account appears suspended after sign-in on Safari for Android.",
       "urgency": 5,
-      "customer_tier": "premium",
-      "time_waiting": 55,
+      "customer_tier": "free",
+      "time_waiting": 85,
       "ground_truth": {
         "department": "technical",
         "priority": "high",
         "action_type": "escalate"
       },
-      "ground_truth_reason": "Organization-wide access outage for a premium customer requires urgent technical escalation."
+      "ground_truth_reason": "Generated from CSV ticket 13 (Account Suspension on Cloud Storage). Route to technical; priority is high from the source severity and action is escalate from the source status and escalation signals."
     }
   ],
   "arrival_schedule": []

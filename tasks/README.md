@@ -1,6 +1,10 @@
 # Task Data Notes
 
-These files are the Day 1 source of truth for the support-triage benchmark.
+These files are the scenario source of truth for the support-triage benchmark.
+
+The current `easy.json`, `medium.json`, and `hard.json` files are generated from
+`customer_support_tickets_200k.csv` with the deterministic script
+`scripts/generate_tasks_from_csv.py`.
 
 ## Scenario shape
 
@@ -30,4 +34,11 @@ Each ticket contains:
 - `ground_truth.action_type`
 - `ground_truth_reason`: debugging-only note that explains the label choice.
 
+## Regeneration
+
+If the source CSV changes, regenerate the benchmark tasks with:
+
+```powershell
+python scripts/generate_tasks_from_csv.py
+```
 
