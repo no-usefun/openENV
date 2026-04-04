@@ -30,10 +30,4 @@ Each ticket contains:
 - `ground_truth.action_type`
 - `ground_truth_reason`: debugging-only note that explains the label choice.
 
-## Day 2 implementation assumptions
 
-- `initial_tickets` should be loaded during `reset()`.
-- Each `arrival_schedule[].time` value is the environment time after a step increment when that wave should become visible.
-- `ground_truth` fields should be the only source used by the grader for correctness checks.
-- `ground_truth_reason` is for humans and tests, not agent observation.
-- `hard.json` intentionally has more total tickets than `max_steps` so the agent must make tradeoffs instead of clearing the queue.

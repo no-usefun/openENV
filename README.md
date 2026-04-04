@@ -1,55 +1,260 @@
-🧠 1. Core Objective The agent acts as a support triage system.
+# Support Triage OpenEnv
 
-Given: Incoming customer tickets
+Support Triage OpenEnv is a deterministic customer-support routing benchmark built for OpenEnv-style RL and agent evaluation. The environment simulates the work of a support triage operator who must decide which ticket to handle next and assign the correct department, priority, and action under time pressure.
 
-It must:
+## Why this environment
 
-Assign: Department (billing / tech / general) Priority (low / medium / high) Action (resolve / escalate / request info)
+Real support teams do not just classify tickets. They choose what to handle first, decide whether a case is billing or technical, and balance fast resolutions against escalation and SLA risk. This benchmark captures those tradeoffs in a simple, reproducible environment.
 
-Goal: Maximize correct routing + minimize SLA violations + handle critical issues first
+## Core Objective
 
-⚙️ 2. Observation (State Design)
+Given an incoming support queue, the agent must choose one ticket and assign:
 
-Each step provides:
+- `department`: `billing`, `technical`, or `general`
+- `priority`: `low`, `medium`, or `high`
+- `action_type`: `resolve`, `escalate`, or `request_info`
 
-Ticket fields: id category_hint (noisy signal) description (optional text) urgency (1–5) customer_tier (free / premium) time_waiting System state: current_time pending_tickets resolved_tickets 🎮 3. Action Space
+The goal is to maximize correct routing, prioritize urgent tickets, and avoid SLA violations.
 
-Each action:
+## Observation Space
 
-(ticket_id, department, priority, action_type)
+The environment exposes a typed Pydantic `Observation` with:
 
-Where:
+- `current_ticket`: the next ticket surfaced by the queue ordering
+- `pending_count`: number of tickets still waiting
+- `resolved_count`: number of tickets already handled
+- `current_time`: simulated environment time
+- `step_number`: number of actions taken so far
+- `pending_tickets`: visible ticket queue
+- `resolved_tickets`: previously taken decisions
 
-department: billing technical general priority: low / medium / high action_type: resolve escalate request_info 🔁 4. Environment Dynamics
+Each visible `Ticket` contains:
 
-Each step:
+- `id`
+- `category_hint`
+- `description`
+- `urgency`
+- `customer_tier`
+- `time_waiting`
 
-Agent picks a ticket Assigns decision System updates: ticket removed or updated time increases new tickets may arrive (medium/hard) 🎯 5. Tasks (Must Be Clearly Different) 🟢 Easy 5–8 tickets Correct category_hint mostly accurate No new arrivals
+Ground-truth labels are stored internally in the task files and are not shown to the agent.
 
-👉 Tests classification + basic routing
+## Action Space
 
-🟡 Medium 10–15 tickets Noisy category_hint Some new tickets arrive SLA pressure begins
+The typed `Action` model contains:
 
-👉 Tests prioritization
+- `ticket_id`
+- `department`
+- `priority`
+- `action_type`
 
-🔴 Hard 20+ tickets High noise in category Continuous inflow Limited steps
+An action is valid only if the values match the allowed literals in [env/models.py](env/models.py).
 
-👉 Tests optimization + tradeoffs
+## Reward Function
 
-📏 6. Grader (MOST IMPORTANT PART)
+Dense step reward is implemented in [env/core.py](env/core.py).
 
-Must be:
+Positive signals:
 
-deterministic reproducible normalized (0–1) Metrics
+- correct department: `+0.2`
+- correct priority: `+0.15`
+- correct action: `+0.1`
 
-Routing Accuracy (department) correct_department / total
-Priority Accuracy correct_priority / total
-SLA Compliance High urgency handled quickly sla_score = 1 - (late_high_priority / total_high_priority)
-Action Correctness resolve vs escalate vs request_info Final Score score = 0.35 * routing_accuracy + 0.25 * priority_accuracy + 0.25 * sla_score + 0.15 * action_accuracy
-👉 Clean, explainable, judge-friendly
+Negative signals:
 
-⚙️ 7. Reward Function (Dense)
+- wrong department: `-0.3`
+- ignoring an urgent ticket while handling a less urgent one: `-0.5`
+- delay penalty: `-0.05 * current_time`
 
-You need step-level reward, not just final score.
+Each step returns a typed `Reward` with:
 
-Positive: Correct department → +0.2 Correct priority → +0.15 Correct action → +0.1 Negative: Wrong department → −0.3 Ignoring urgent ticket → −0.5 Delay penalty → −0.05 * time 🔥 8. What Makes This WINNING ✔ Real-world utility (30%) This is literally used in Zendesk / Freshdesk systems ✔ Strong graders (25%) Fully deterministic Multi-metric ✔ Good reward shaping (20%) Not sparse Step-level signals ⚠️ Critical Pitfalls to Avoid ❌ Weak version (loses points): Just classify ticket → done ✅ Strong version: Multi-step decision Time pressure Tradeoffs
+- `step_score` in `[-1, 1]`
+- `total_score` normalized to `[0, 1]`
+- `breakdown` for debugging
+
+## Grader
+
+Final scoring is deterministic and normalized to `[0, 1]`.
+
+Metrics:
+
+- routing accuracy = correct department / total tickets
+- priority accuracy = correct priority / total tickets
+- SLA score = `1 - (late_high_priority / total_high_priority)`
+- action accuracy = correct action / total tickets
+
+Final score:
+
+```text
+0.35 * routing_accuracy +
+0.25 * priority_accuracy +
+0.25 * sla_score +
+0.15 * action_accuracy
+```
+
+This logic is implemented in [env/grader.py](env/grader.py).
+
+## Tasks
+
+The benchmark ships with three deterministic tasks:
+
+- `easy`: 6 tickets, mostly clean category hints, no new arrivals
+- `medium`: 12 total tickets, noisy hints, scheduled arrivals, visible SLA pressure
+- `hard`: 24 total tickets, continuous arrivals, limited steps, forced tradeoffs
+
+Task definitions live in [tasks/easy.json](tasks/easy.json), [tasks/medium.json](tasks/medium.json), and [tasks/hard.json](tasks/hard.json).
+
+## Project Structure
+
+```text
+support-triage-env/
+├── agent/
+│   └── baseline.py
+├── env/
+│   ├── core.py
+│   ├── environment.py
+│   ├── grader.py
+│   ├── models.py
+│   ├── tasks.py
+│   └── tickets.py
+├── tasks/
+│   ├── easy.json
+│   ├── medium.json
+│   └── hard.json
+├── tests/
+│   ├── test_environment.py
+│   ├── test_grader.py
+│   └── test_tasks.py
+├── app.py
+├── inference.py
+├── openenv.yaml
+├── Dockerfile
+└── requirements.txt
+```
+
+## Setup
+
+### Local Python setup
+
+```bash
+python -m venv .venv
+. .venv/bin/activate
+pip install -r requirements.txt
+```
+
+On Windows PowerShell:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+### Run tests
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+## Local Usage
+
+### CLI smoke test
+
+Run the heuristic baseline against a single task:
+
+```bash
+python app.py
+python app.py medium
+python app.py hard
+```
+
+### HTTP server
+
+Run the FastAPI app locally:
+
+```bash
+uvicorn app:app --host 0.0.0.0 --port 8000
+```
+
+Useful endpoints:
+
+- `GET /`
+- `GET /health`
+- `GET /tasks`
+- `GET /reset`
+- `POST /reset`
+- `GET /state/{session_id}`
+- `POST /step/{session_id}`
+- `GET /grade/{session_id}`
+
+Example reset call:
+
+```bash
+curl -X POST http://127.0.0.1:8000/reset \
+  -H "Content-Type: application/json" \
+  -d '{"scenario_name":"easy"}'
+```
+
+## Baseline Inference
+
+`inference.py` runs a reproducible baseline over one task or all tasks.
+
+Required environment variables:
+
+- `MODEL_NAME`
+- `API_BASE_URL` (optional for native OpenAI, defaults to `https://api.openai.com/v1`)
+- `OPENAI_API_KEY` or `HF_TOKEN`
+
+Run all tasks with the OpenAI client:
+
+```bash
+python inference.py
+```
+
+Run a single task:
+
+```bash
+python inference.py --scenario medium
+```
+
+Run the heuristic fallback only:
+
+```bash
+python inference.py --heuristic-only
+```
+
+The baseline prints JSON with per-task scores, fallback counts, and the average final score.
+
+## Verified Local Smoke Scores
+
+These are the current heuristic smoke-test scores from the local environment:
+
+- `easy`: `0.9583`
+- `medium`: `0.8667`
+- `hard`: `0.55`
+
+Model-based scores depend on the configured `MODEL_NAME` and API endpoint.
+
+## Docker
+
+Build:
+
+```bash
+docker build -t support-triage-env .
+```
+
+Run:
+
+```bash
+docker run -p 8000:8000 support-triage-env
+```
+
+## Hugging Face Spaces
+
+The repository includes:
+
+- a Dockerfile for containerized deployment
+- a FastAPI entrypoint exposed through [app.py](app.py)
+- [openenv.yaml](openenv.yaml) configured for `runtime: fastapi`
+
+This makes the project ready to package as a Docker-based Hugging Face Space tagged for OpenEnv.
