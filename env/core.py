@@ -18,6 +18,7 @@ class TicketEnv:
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config = config or {}
         self.scenario_name = self.config.get("scenario_name", "easy")
+        self.max_steps_override = self.config.get("max_steps")
 
         self._scenario: Optional[Scenario] = None
         self._pending_tickets: List[LabeledTicket] = []
@@ -45,6 +46,8 @@ class TicketEnv:
             self._scenario.arrival_schedule,
             key=lambda arrival: arrival.time,
         )
+        if self.max_steps_override is not None:
+            self._scenario.max_steps = int(self.max_steps_override)
 
         self._release_due_arrivals()
         return self.state()
@@ -77,7 +80,7 @@ class TicketEnv:
 
         ticket = next((item for item in self._pending_tickets if item.id == action.ticket_id), None)
         if ticket is None:
-            self._advance_time()
+            arrivals_added = self._advance_time()
             self._step_number += 1
             step_score = -0.5
             self._normalized_score_sum += _normalize_step_score(step_score)
@@ -94,7 +97,11 @@ class TicketEnv:
                     breakdown={"invalid_action": -0.5},
                 ),
                 self._done,
-                {"error": "invalid_ticket"},
+                {
+                    "error": "invalid_ticket",
+                    "arrivals_added": arrivals_added,
+                    "pending_count": len(self._pending_tickets),
+                },
             )
 
         reward = self._compute_reward(ticket, action)
@@ -113,10 +120,20 @@ class TicketEnv:
         )
         self._pending_tickets = [item for item in self._pending_tickets if item.id != ticket.id]
 
-        self._advance_time()
+        arrivals_added = self._advance_time()
         self._step_number += 1
         self._refresh_done_flag()
-        return self.state(), reward, self._done, {"scenario_id": self._scenario.scenario_id}
+        return (
+            self.state(),
+            reward,
+            self._done,
+            {
+                "scenario_id": self._scenario.scenario_id,
+                "arrivals_added": arrivals_added,
+                "pending_count": len(self._pending_tickets),
+                "resolved_count": len(self._resolved_tickets),
+            },
+        )
 
     def grade(self):
         if self._scenario is None:
@@ -171,17 +188,17 @@ class TicketEnv:
 
         return any(ticket.urgency >= 4 for ticket in self._pending_tickets if ticket.id != selected_ticket.id)
 
-    def _advance_time(self) -> None:
+    def _advance_time(self) -> int:
         self._time += 1
 
         for ticket in self._pending_tickets:
             ticket.time_waiting += 1
 
-        self._release_due_arrivals()
+        return self._release_due_arrivals()
 
-    def _release_due_arrivals(self) -> None:
+    def _release_due_arrivals(self) -> int:
         if not self._future_arrivals:
-            return
+            return 0
 
         due_arrivals = [arrival for arrival in self._future_arrivals if arrival.time <= self._time]
         self._future_arrivals = [arrival for arrival in self._future_arrivals if arrival.time > self._time]
@@ -190,6 +207,8 @@ class TicketEnv:
             self._pending_tickets.extend(
                 clone_ticket_list(arrival.tickets, visible_at=arrival.time)
             )
+
+        return sum(len(arrival.tickets) for arrival in due_arrivals)
 
     def _refresh_done_flag(self) -> None:
         if self._scenario is None:
