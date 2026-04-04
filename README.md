@@ -53,3 +53,50 @@ Action Correctness resolve vs escalate vs request_info Final Score score = 0.35 
 You need step-level reward, not just final score.
 
 Positive: Correct department → +0.2 Correct priority → +0.15 Correct action → +0.1 Negative: Wrong department → −0.3 Ignoring urgent ticket → −0.5 Delay penalty → −0.05 * time 🔥 8. What Makes This WINNING ✔ Real-world utility (30%) This is literally used in Zendesk / Freshdesk systems ✔ Strong graders (25%) Fully deterministic Multi-metric ✔ Good reward shaping (20%) Not sparse Step-level signals ⚠️ Critical Pitfalls to Avoid ❌ Weak version (loses points): Just classify ticket → done ✅ Strong version: Multi-step decision Time pressure Tradeoffs
+
+
+
+Project Structure 
+support-triage-env/
+│
+├── env/
+│   ├── __init__.py
+│   ├── environment.py        # core env class
+│   ├── models.py             # Pydantic models
+│   ├── grader.py             # scoring logic
+│   └── tickets.py            # hardcoded ticket scenarios
+│
+├── tasks/
+│   ├── easy.json             # 5-8 tickets, clean signals
+│   ├── medium.json           # 10-15 tickets, noisy
+│   └── hard.json             # 20+ tickets, chaos
+│
+├── tests/
+│   ├── test_environment.py
+│   ├── test_grader.py
+│   └── test_tasks.py
+│
+├── inference.py              # LLM agent runner
+├── openenv.yaml              # spec metadata
+├── Dockerfile
+├── requirements.txt
+└── README.md
+
+
+
+
+![DevelopmentPlan](image.png)
+
+What to Build Each Day
+Day 1 — Foundation
+No code yet. Write the ticket scenarios as JSON by hand. Define ground truth labels for every ticket. This is the creative work — get it right here and everything else becomes mechanical.
+Day 2 — Core environment
+Build environment.py with the three methods. Hardcode the easy task first, get one full loop working end to end on your laptop. Don't touch medium/hard until easy works perfectly.
+Day 3 — Grader
+Build grader.py with all four metrics separately, then combine into the weighted score. Test it manually against your hardcoded ground truth before wiring it to the env.
+Day 4 — Spec + tests
+Add Pydantic models to models.py, write openenv.yaml, run the validator. Write at least basic unit tests so you catch regressions when you touch the grader later.
+Day 5 — inference.py
+Connect an LLM to your environment. This is mostly prompt engineering — how you describe the ticket to the LLM and how you parse its response into a valid Action object.
+Day 6 — Ship
+Dockerfile, HF Spaces deploy, final validation run, submit. Leave a full day for this — Docker always has surprises.
