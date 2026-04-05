@@ -1,12 +1,12 @@
 {
   "scenario_id": "support-triage-hard-v1",
   "difficulty": "hard",
-  "description": "Dataset-backed triage with high hint noise, continuous arrivals, and fewer steps than tickets so the agent must trade off impact.",
+  "description": "Dataset-backed triage with high hint noise, continuous arrivals, and 25 total tickets with fewer steps than tickets to force tradeoffs.",
   "start_time": 0,
-  "max_steps": 24,
+  "max_steps": 20,
   "sla_targets_steps": {
     "high": 2,
-    "medium": 5,
+    "medium": 4,
     "low": 999
   },
   "initial_tickets": [
@@ -380,6 +380,24 @@
             "action_type": "escalate"
           },
           "ground_truth_reason": "Generated from CSV ticket 85 (Login Issue on Web Portal). Route to technical; priority is high from the source severity and action is escalate from the source status and escalation signals."
+        }
+      ]
+    },
+    {
+      "time": 8,
+      "tickets": [
+        {
+          "id": "H025",
+          "category_hint": "billing",
+          "description": "I was billed for a plan I don\u2019t remember subscribing to.",
+          "urgency": 2,
+          "customer_tier": "free",
+          "time_waiting": 12,
+          "ground_truth": {
+            "department": "billing",
+            "priority": "medium",
+            "action_type": "request_info"
+          }
         }
       ]
     }

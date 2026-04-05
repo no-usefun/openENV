@@ -47,7 +47,7 @@ class GraderTests(unittest.TestCase):
 
         self.assertLess(grade.sla_score, 1.0)
         self.assertLess(grade.final_score, 1.0)
-        self.assertEqual(grade.total_high_priority, 2)
+        self.assertEqual(grade.total_high_priority, 4)
         self.assertEqual(grade.late_high_priority, 1)
 
     def test_wrong_labels_reduce_accuracy_metrics(self) -> None:

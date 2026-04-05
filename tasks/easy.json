@@ -1,12 +1,12 @@
 {
   "scenario_id": "support-triage-easy-v1",
   "difficulty": "easy",
-  "description": "Dataset-backed triage with mostly accurate hints, no arrivals, and enough clarity to test basic routing.",
+  "description": "Dataset-backed triage with mostly accurate hints, no arrivals, and a forgiving 10-ticket starter set for learning the workflow.",
   "start_time": 0,
-  "max_steps": 8,
+  "max_steps": 12,
   "sla_targets_steps": {
-    "high": 2,
-    "medium": 5,
+    "high": 3,
+    "medium": 6,
     "low": 999
   },
   "initial_tickets": [
@@ -21,8 +21,7 @@
         "department": "billing",
         "priority": "medium",
         "action_type": "resolve"
-      },
-      "ground_truth_reason": "Generated from CSV ticket 4 (Subscription Cancellation on Payment Gateway). Route to billing; priority is medium from the source severity and action is resolve from the source status and escalation signals."
+      }
     },
     {
       "id": "E002",
@@ -35,8 +34,7 @@
         "department": "technical",
         "priority": "high",
         "action_type": "escalate"
-      },
-      "ground_truth_reason": "Generated from CSV ticket 1 (Account Suspension on Web Portal). Route to technical; priority is high from the source severity and action is escalate from the source status and escalation signals."
+      }
     },
     {
       "id": "E003",
@@ -49,8 +47,7 @@
         "department": "general",
         "priority": "low",
         "action_type": "resolve"
-      },
-      "ground_truth_reason": "Generated from CSV ticket 27 (Feature Request on Web Portal). Route to general; priority is low from the source severity and action is resolve from the source status and escalation signals."
+      }
     },
     {
       "id": "E004",
@@ -63,13 +60,12 @@
         "department": "billing",
         "priority": "low",
         "action_type": "resolve"
-      },
-      "ground_truth_reason": "Generated from CSV ticket 18 (Refund Request on Mobile App). Route to billing; priority is low from the source severity and action is resolve from the source status and escalation signals."
+      }
     },
     {
       "id": "E005",
       "category_hint": "billing",
-      "description": "My payment for E-commerce Store looks wrong, but I am not sure which invoice or workspace is affected yet. It was billed through Crypto.",
+      "description": "My payment for E-commerce Store looks wrong, but I am not sure which invoice or workspace is affected yet.",
       "urgency": 3,
       "customer_tier": "premium",
       "time_waiting": 37,
@@ -77,8 +73,7 @@
         "department": "billing",
         "priority": "medium",
         "action_type": "request_info"
-      },
-      "ground_truth_reason": "Generated from CSV ticket 318 (Payment Problem on E-commerce Store). Route to billing; priority is medium from the source severity and action is request_info from the source status and escalation signals."
+      }
     },
     {
       "id": "E006",
@@ -91,8 +86,59 @@
         "department": "technical",
         "priority": "high",
         "action_type": "escalate"
-      },
-      "ground_truth_reason": "Generated from CSV ticket 13 (Account Suspension on Cloud Storage). Route to technical; priority is high from the source severity and action is escalate from the source status and escalation signals."
+      }
+    },
+    {
+      "id": "E051",
+      "category_hint": "billing",
+      "description": "I downgraded my plan but was still billed for the higher tier.",
+      "urgency": 3,
+      "customer_tier": "premium",
+      "time_waiting": 30,
+      "ground_truth": {
+        "department": "billing",
+        "priority": "medium",
+        "action_type": "resolve"
+      }
+    },
+    {
+      "id": "E052",
+      "category_hint": "technical",
+      "description": "Login OTP is not being delivered, but it worked earlier today.",
+      "urgency": 4,
+      "customer_tier": "free",
+      "time_waiting": 20,
+      "ground_truth": {
+        "department": "technical",
+        "priority": "high",
+        "action_type": "escalate"
+      }
+    },
+    {
+      "id": "E053",
+      "category_hint": "general",
+      "description": "Do you offer discounts for students?",
+      "urgency": 1,
+      "customer_tier": "free",
+      "time_waiting": 5,
+      "ground_truth": {
+        "department": "general",
+        "priority": "low",
+        "action_type": "resolve"
+      }
+    },
+    {
+      "id": "E054",
+      "category_hint": "technical",
+      "description": "Dashboard takes forever to load and sometimes times out.",
+      "urgency": 4,
+      "customer_tier": "premium",
+      "time_waiting": 60,
+      "ground_truth": {
+        "department": "technical",
+        "priority": "high",
+        "action_type": "escalate"
+      }
     }
   ],
   "arrival_schedule": []
