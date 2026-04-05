@@ -128,7 +128,7 @@ class TicketEnv:
             reward,
             self._done,
             {
-                "scenario_id": self._scenario.scenario_id,
+                "scenario_id": self._scenario.scenario_id if self._scenario else None,
                 "arrivals_added": arrivals_added,
                 "pending_count": len(self._pending_tickets),
                 "resolved_count": len(self._resolved_tickets),

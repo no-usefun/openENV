@@ -12,15 +12,19 @@ class EnvironmentTests(unittest.TestCase):
 
         self.assertEqual(state.current_time, 0)
         self.assertEqual(state.step_number, 0)
-        self.assertEqual(state.pending_count, 6)
+        self.assertEqual(state.pending_count, 10)
         self.assertEqual(state.resolved_count, 0)
-        self.assertEqual(state.current_ticket.id, "E006")
+        current_ticket = state.current_ticket
+        assert current_ticket is not None
+        self.assertEqual(current_ticket.id, "E006")
 
     def test_medium_arrivals_appear_after_two_steps(self) -> None:
         env = TicketEnv({"scenario_name": "medium"})
         state = env.reset()
+        info = {}
 
         for _ in range(2):
+            assert state.current_ticket is not None
             current_id = state.current_ticket.id
             labeled_ticket = next(ticket for ticket in env._pending_tickets if ticket.id == current_id)
             action = Action(

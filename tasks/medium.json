@@ -1,9 +1,9 @@
 {
   "scenario_id": "support-triage-medium-v1",
   "difficulty": "medium",
-  "description": "Dataset-backed triage with noisier hints, staged arrivals, and enough urgent work to force prioritization.",
+  "description": "Dataset-backed triage with noisier hints, staged arrivals, and 15 total tickets that create visible prioritization pressure.",
   "start_time": 0,
-  "max_steps": 12,
+  "max_steps": 14,
   "sla_targets_steps": {
     "high": 2,
     "medium": 5,
@@ -199,6 +199,50 @@
             "action_type": "request_info"
           },
           "ground_truth_reason": "Generated from CSV ticket 70 (Performance Issue on CRM Platform). Route to technical; priority is medium from the source severity and action is request_info from the source status and escalation signals."
+        }
+      ]
+    },
+    {
+      "time": 6,
+      "tickets": [
+        {
+          "id": "M031",
+          "category_hint": "billing",
+          "description": "Something is wrong with my account, not sure what.",
+          "urgency": 2,
+          "customer_tier": "free",
+          "time_waiting": 12,
+          "ground_truth": {
+            "department": "technical",
+            "priority": "medium",
+            "action_type": "request_info"
+          }
+        },
+        {
+          "id": "M032",
+          "category_hint": "technical",
+          "description": "I was charged extra but also cannot log in.",
+          "urgency": 4,
+          "customer_tier": "premium",
+          "time_waiting": 25,
+          "ground_truth": {
+            "department": "technical",
+            "priority": "high",
+            "action_type": "request_info"
+          }
+        },
+        {
+          "id": "M033",
+          "category_hint": "general",
+          "description": "",
+          "urgency": 1,
+          "customer_tier": "free",
+          "time_waiting": 5,
+          "ground_truth": {
+            "department": "general",
+            "priority": "low",
+            "action_type": "request_info"
+          }
         }
       ]
     }
