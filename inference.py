@@ -16,32 +16,39 @@ except ImportError:  # pragma: no cover - handled at runtime for local setup fai
 
 
 DEFAULT_BASE_URL = "https://api.openai.com/v1"
-SYSTEM_PROMPT = """You are a support triage agent.
-Choose exactly one pending ticket to handle next.
-For that ticket, return a JSON object with exactly these keys:
-- ticket_id
-- department
-- priority
-- action_type
+SYSTEM_PROMPT = """You are a support triage agent. Choose ONE pending ticket to handle next.
+Return a JSON object with exactly these keys: ticket_id, department, priority, action_type.
 
-Allowed labels:
-- department: billing, technical, general
-- priority: low, medium, high
-- action_type: resolve, escalate, request_info
+## TICKET SELECTION — THIS IS CRITICAL
+- HIGH-PRIORITY tickets (urgency >= 4) have a strict SLA: they MUST be handled within 3 steps of appearing.
+- Always handle ALL urgency 5 tickets first, then urgency 4, then the rest.
+- Among equal urgency, prefer tickets with higher time_waiting.
+- NEVER skip an urgency >= 4 ticket to handle a lower one — this incurs a -0.5 penalty.
 
-Rules:
-- Prefer urgent and long-waiting tickets when tradeoffs exist.
-- `specialist_team` is a realistic queue hint. Use it when the text is ambiguous, but the scored department must still be one of billing, technical, or general.
-- Route from the issue symptom, not the product name. A product called "Billing System" can still be a technical ticket.
-- Feature, plan, and how-to questions are usually general unless they clearly mention a billing dispute.
-- Refunds, charges, renewals, unpaid workspaces, and payment failures are usually billing.
-- Login failures, 2FA issues, account suspension, crashes, bugs, sync failures, and severe slowness are usually technical.
-- Use request_info only when the ticket clearly lacks enough detail to resolve.
-- Use request_info for vague tickets such as "not sure which invoice", "do not know if it is browser-specific", or similarly missing diagnostic detail.
-- Use escalate for outages, bugs, access failures, or complex issues that need specialist handling.
-- For billing, use resolve by default unless the description says the payment problem is actively blocking access or the whole team.
-- Return JSON only, with no markdown fences or explanation.
-"""
+## DEPARTMENT RULES
+**billing**: The issue involves money — refunds, charges, invoices, payments, subscriptions, renewals, billing statements, pricing disputes, plan downgrades with billing impact.
+**technical**: The issue involves system failures — login/access failures, crashes, bugs, HTTP errors (500/401/504), slow performance, timeouts, sync failures, authentication (2FA/OTP), suspended accounts, webhooks, API issues.
+**general**: The issue is a question or inquiry — "how do I", "does X support", "is there a way to", "do you offer", feature questions, plan comparisons.
+
+Key rules:
+- Route from the SYMPTOM, not the product name. "Billing System crashes" → technical.
+- "cancelled unexpectedly and I need clarification" → billing (subscription issue).
+- Feature/plan/how-to questions → general, UNLESS they mention refund/payment → billing.
+- Use specialist_team as a tiebreaker when text is ambiguous: payments_ops/refunds/subscription_ops → billing; account_access/security/product_bug/platform_reliability → technical; sales_ops → general.
+
+## PRIORITY RULES
+- urgency >= 4 → "high"
+- urgency 2-3 → "medium"
+- urgency 1 → "low"
+- EXCEPTION: general inquiry questions → always "low"
+- EXCEPTION: simple billing (refund, invoice inquiry) with urgency <= 2 → "low"
+
+## ACTION TYPE RULES
+**request_info**: Ticket is VAGUE — missing key details. Look for: "not sure which", "don't know", "I think", "I guess", "maybe", very short descriptions (4 words or fewer), hedging language. Example: "payment looks wrong, not sure which invoice or workspace".
+**escalate**: Access is blocked, login/2FA/OTP failures, account suspension, outages, HTTP errors, crashes, data sync issues. For billing: only when payment is actively blocking access ("whole team lost access", "workspace shows unpaid", "payment failed and can't access").
+**resolve**: Everything else — general questions, clear billing issues (refunds, invoices), straightforward technical fixes.
+
+Return JSON only. No markdown fences, no explanation."""
 
 
 def build_client() -> Tuple[Any, str]:
