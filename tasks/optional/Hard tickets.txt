@@ -1,0 +1,461 @@
+[
+  {
+    "id": "T161",
+    "category_hint": "billing",
+    "description": "...",
+    "urgency": 1,
+    "customer_tier": "free",
+    "time_waiting": 2,
+    "ground_truth": { "department": "billing", "priority": "low", "action_type": "request_info" }
+  },
+  {
+    "id": "T162",
+    "category_hint": "",
+    "description": "Charged twice.",
+    "urgency": 0,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "billing", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T163",
+    "category_hint": "",
+    "description": "",
+    "urgency": 5,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "general", "priority": "high", "action_type": "request_info" }
+  },
+  {
+    "id": "T164",
+    "category_hint": "",
+    "description": "",
+    "urgency": 0,
+    "customer_tier": "premium",
+    "time_waiting": 0,
+    "ground_truth": { "department": "general", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T165",
+    "category_hint": "",
+    "description": "",
+    "urgency": 0,
+    "customer_tier": "",
+    "time_waiting": 180,
+    "ground_truth": { "department": "general", "priority": "medium", "action_type": "request_info" }
+  },
+
+  {
+    "id": "T166",
+    "category_hint": "technical",
+    "description": "...",
+    "urgency": 2,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "technical", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T167",
+    "category_hint": "",
+    "description": "App broken",
+    "urgency": 0,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "technical", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T168",
+    "category_hint": "",
+    "description": "",
+    "urgency": 3,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "general", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T169",
+    "category_hint": "",
+    "description": "",
+    "urgency": 0,
+    "customer_tier": "free",
+    "time_waiting": 0,
+    "ground_truth": { "department": "general", "priority": "low", "action_type": "request_info" }
+  },
+  {
+    "id": "T170",
+    "category_hint": "",
+    "description": "",
+    "urgency": 0,
+    "customer_tier": "",
+    "time_waiting": 5,
+    "ground_truth": { "department": "general", "priority": "low", "action_type": "request_info" }
+  },
+
+  {
+    "id": "T171",
+    "category_hint": "billing",
+    "description": "...",
+    "urgency": 4,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "billing", "priority": "high", "action_type": "request_info" }
+  },
+  {
+    "id": "T172",
+    "category_hint": "",
+    "description": "Refund",
+    "urgency": 0,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "billing", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T173",
+    "category_hint": "",
+    "description": "",
+    "urgency": 1,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "general", "priority": "low", "action_type": "request_info" }
+  },
+  {
+    "id": "T174",
+    "category_hint": "",
+    "description": "",
+    "urgency": 0,
+    "customer_tier": "premium",
+    "time_waiting": 0,
+    "ground_truth": { "department": "general", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T175",
+    "category_hint": "",
+    "description": "",
+    "urgency": 0,
+    "customer_tier": "",
+    "time_waiting": 100,
+    "ground_truth": { "department": "general", "priority": "medium", "action_type": "request_info" }
+  },
+
+  {
+    "id": "T176",
+    "category_hint": "technical",
+    "description": "...",
+    "urgency": 5,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "technical", "priority": "high", "action_type": "request_info" }
+  },
+  {
+    "id": "T177",
+    "category_hint": "",
+    "description": "Crash",
+    "urgency": 0,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "technical", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T178",
+    "category_hint": "",
+    "description": "",
+    "urgency": 2,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "general", "priority": "low", "action_type": "request_info" }
+  },
+  {
+    "id": "T179",
+    "category_hint": "",
+    "description": "",
+    "urgency": 0,
+    "customer_tier": "free",
+    "time_waiting": 0,
+    "ground_truth": { "department": "general", "priority": "low", "action_type": "request_info" }
+  },
+  {
+    "id": "T180",
+    "category_hint": "",
+    "description": "",
+    "urgency": 0,
+    "customer_tier": "",
+    "time_waiting": 60,
+    "ground_truth": { "department": "general", "priority": "medium", "action_type": "request_info" }
+  },
+
+  {
+    "id": "T181",
+    "category_hint": "billing",
+    "description": "...",
+    "urgency": 3,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "billing", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T182",
+    "category_hint": "",
+    "description": "Payment issue",
+    "urgency": 0,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "billing", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T183",
+    "category_hint": "",
+    "description": "",
+    "urgency": 4,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "general", "priority": "high", "action_type": "request_info" }
+  },
+  {
+    "id": "T184",
+    "category_hint": "",
+    "description": "",
+    "urgency": 0,
+    "customer_tier": "premium",
+    "time_waiting": 0,
+    "ground_truth": { "department": "general", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T185",
+    "category_hint": "",
+    "description": "",
+    "urgency": 0,
+    "customer_tier": "",
+    "time_waiting": 140,
+    "ground_truth": { "department": "general", "priority": "medium", "action_type": "request_info" }
+  },
+
+  {
+    "id": "T186",
+    "category_hint": "technical",
+    "description": "...",
+    "urgency": 4,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "technical", "priority": "high", "action_type": "request_info" }
+  },
+  {
+    "id": "T187",
+    "category_hint": "",
+    "description": "Error",
+    "urgency": 0,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "technical", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T188",
+    "category_hint": "",
+    "description": "",
+    "urgency": 3,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "general", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T189",
+    "category_hint": "",
+    "description": "",
+    "urgency": 0,
+    "customer_tier": "free",
+    "time_waiting": 0,
+    "ground_truth": { "department": "general", "priority": "low", "action_type": "request_info" }
+  },
+  {
+    "id": "T190",
+    "category_hint": "",
+    "description": "",
+    "urgency": 0,
+    "customer_tier": "",
+    "time_waiting": 20,
+    "ground_truth": { "department": "general", "priority": "low", "action_type": "request_info" }
+  },
+
+  {
+    "id": "T191",
+    "category_hint": "billing",
+    "description": "...",
+    "urgency": 5,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "billing", "priority": "high", "action_type": "request_info" }
+  },
+  {
+    "id": "T192",
+    "category_hint": "",
+    "description": "Charged",
+    "urgency": 0,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "billing", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T193",
+    "category_hint": "",
+    "description": "",
+    "urgency": 2,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "general", "priority": "low", "action_type": "request_info" }
+  },
+  {
+    "id": "T194",
+    "category_hint": "",
+    "description": "",
+    "urgency": 0,
+    "customer_tier": "premium",
+    "time_waiting": 0,
+    "ground_truth": { "department": "general", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T195",
+    "category_hint": "",
+    "description": "",
+    "urgency": 0,
+    "customer_tier": "",
+    "time_waiting": 75,
+    "ground_truth": { "department": "general", "priority": "medium", "action_type": "request_info" }
+  },
+
+  {
+    "id": "T196",
+    "category_hint": "technical",
+    "description": "...",
+    "urgency": 3,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "technical", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T197",
+    "category_hint": "",
+    "description": "Not loading",
+    "urgency": 0,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "technical", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T198",
+    "category_hint": "",
+    "description": "",
+    "urgency": 1,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "general", "priority": "low", "action_type": "request_info" }
+  },
+  {
+    "id": "T199",
+    "category_hint": "",
+    "description": "",
+    "urgency": 0,
+    "customer_tier": "free",
+    "time_waiting": 0,
+    "ground_truth": { "department": "general", "priority": "low", "action_type": "request_info" }
+  },
+  {
+    "id": "T200",
+    "category_hint": "",
+    "description": "",
+    "urgency": 0,
+    "customer_tier": "",
+    "time_waiting": 10,
+    "ground_truth": { "department": "general", "priority": "low", "action_type": "request_info" }
+  },
+
+  {
+    "id": "T201",
+    "category_hint": "billing",
+    "description": "...",
+    "urgency": 2,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "billing", "priority": "low", "action_type": "request_info" }
+  },
+  {
+    "id": "T202",
+    "category_hint": "",
+    "description": "Refund issue",
+    "urgency": 0,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "billing", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T203",
+    "category_hint": "",
+    "description": "",
+    "urgency": 4,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "general", "priority": "high", "action_type": "request_info" }
+  },
+  {
+    "id": "T204",
+    "category_hint": "",
+    "description": "",
+    "urgency": 0,
+    "customer_tier": "premium",
+    "time_waiting": 0,
+    "ground_truth": { "department": "general", "priority": "medium", "action_type": "request_info" }
+  },
+  {
+    "id": "T205",
+    "category_hint": "",
+    "description": "",
+    "urgency": 0,
+    "customer_tier": "",
+    "time_waiting": 160,
+    "ground_truth": { "department": "general", "priority": "medium", "action_type": "request_info" }
+  },
+
+  {
+    "id": "T206",
+    "category_hint": "technical",
+    "description": "...",
+    "urgency": 1,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "technical", "priority": "low", "action_type": "request_info" }
+  },
+  {
+    "id": "T207",
+    "category_hint": "",
+    "description": "Bug",
+    "urgency": 0,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "technical", "priority": "low", "action_type": "request_info" }
+  },
+  {
+    "id": "T208",
+    "category_hint": "",
+    "description": "",
+    "urgency": 5,
+    "customer_tier": "",
+    "time_waiting": 0,
+    "ground_truth": { "department": "general", "priority": "high", "action_type": "request_info" }
+  },
+  {
+    "id": "T209",
+    "category_hint": "",
+    "description": "",
+    "urgency": 0,
+    "customer_tier": "free",
+    "time_waiting": 0,
+    "ground_truth": { "department": "general", "priority": "low", "action_type": "request_info" }
+  },
+  {
+    "id": "T210",
+    "category_hint": "",
+    "description": "",
+    "urgency": 0,
+    "customer_tier": "",
+    "time_waiting": 30,
+    "ground_truth": { "department": "general", "priority": "low", "action_type": "request_info" }
+  }
+]

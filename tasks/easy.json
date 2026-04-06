@@ -1,0 +1,145 @@
+{
+  "scenario_id": "support-triage-easy-v1",
+  "difficulty": "easy",
+  "description": "Dataset-backed triage with mostly accurate hints, no arrivals, and a forgiving 10-ticket starter set for learning the workflow.",
+  "start_time": 0,
+  "max_steps": 12,
+  "sla_targets_steps": {
+    "high": 3,
+    "medium": 6,
+    "low": 999
+  },
+  "initial_tickets": [
+    {
+      "id": "E001",
+      "category_hint": "billing",
+      "description": "My enterprise subscription for Payment Gateway was cancelled unexpectedly and I need clarification.",
+      "urgency": 3,
+      "customer_tier": "premium",
+      "time_waiting": 40,
+      "ground_truth": {
+        "department": "billing",
+        "priority": "medium",
+        "action_type": "resolve"
+      }
+    },
+    {
+      "id": "E002",
+      "category_hint": "technical",
+      "description": "Users can no longer access Web Portal; the account appears suspended after sign-in on Edge for MacOS.",
+      "urgency": 4,
+      "customer_tier": "free",
+      "time_waiting": 46,
+      "ground_truth": {
+        "department": "technical",
+        "priority": "high",
+        "action_type": "escalate"
+      }
+    },
+    {
+      "id": "E003",
+      "category_hint": "general",
+      "description": "Does Web Portal support scheduled summary exports for individual teams, or is that only available on another plan?",
+      "urgency": 1,
+      "customer_tier": "premium",
+      "time_waiting": 102,
+      "ground_truth": {
+        "department": "general",
+        "priority": "low",
+        "action_type": "resolve"
+      }
+    },
+    {
+      "id": "E004",
+      "category_hint": "billing",
+      "description": "I need a refund for the recent Mobile App charge on my Crypto statement.",
+      "urgency": 2,
+      "customer_tier": "premium",
+      "time_waiting": 99,
+      "ground_truth": {
+        "department": "billing",
+        "priority": "low",
+        "action_type": "resolve"
+      }
+    },
+    {
+      "id": "E005",
+      "category_hint": "billing",
+      "description": "My payment for E-commerce Store looks wrong, but I am not sure which invoice or workspace is affected yet.",
+      "urgency": 3,
+      "customer_tier": "premium",
+      "time_waiting": 37,
+      "ground_truth": {
+        "department": "billing",
+        "priority": "medium",
+        "action_type": "request_info"
+      }
+    },
+    {
+      "id": "E006",
+      "category_hint": "technical",
+      "description": "Users can no longer access Cloud Storage; the account appears suspended after sign-in on Safari for Android.",
+      "urgency": 5,
+      "customer_tier": "free",
+      "time_waiting": 85,
+      "ground_truth": {
+        "department": "technical",
+        "priority": "high",
+        "action_type": "escalate"
+      }
+    },
+    {
+      "id": "E051",
+      "category_hint": "billing",
+      "description": "I downgraded my plan but was still billed for the higher tier.",
+      "urgency": 3,
+      "customer_tier": "premium",
+      "time_waiting": 30,
+      "ground_truth": {
+        "department": "billing",
+        "priority": "medium",
+        "action_type": "resolve"
+      }
+    },
+    {
+      "id": "E052",
+      "category_hint": "technical",
+      "description": "Login OTP is not being delivered, but it worked earlier today.",
+      "urgency": 4,
+      "customer_tier": "free",
+      "time_waiting": 20,
+      "ground_truth": {
+        "department": "technical",
+        "priority": "high",
+        "action_type": "escalate"
+      }
+    },
+    {
+      "id": "E053",
+      "category_hint": "general",
+      "description": "Do you offer discounts for students?",
+      "urgency": 1,
+      "customer_tier": "free",
+      "time_waiting": 5,
+      "ground_truth": {
+        "department": "general",
+        "priority": "low",
+        "action_type": "resolve"
+      }
+    },
+    {
+      "id": "E054",
+      "category_hint": "technical",
+      "description": "Dashboard takes forever to load and sometimes times out.",
+      "urgency": 4,
+      "customer_tier": "premium",
+      "time_waiting": 60,
+      "ground_truth": {
+        "department": "technical",
+        "priority": "high",
+        "action_type": "escalate"
+      }
+    }
+  ],
+  "arrival_schedule": []
+}
