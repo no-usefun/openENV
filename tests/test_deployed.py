@@ -67,7 +67,7 @@ def run_episode(base_url: str, scenario: str) -> dict:
     print(f"{'='*60}")
 
     # 1. Reset — same as judge does first
-    r = requests.post(f"{base_url}/reset", params={"scenario_name": scenario}, timeout=30)
+    r = requests.post(f"{base_url}/reset", json={"scenario_name": scenario}, timeout=30)
     r.raise_for_status()
     reset_data = r.json()
     session_id = reset_data["session_id"]
