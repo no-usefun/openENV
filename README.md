@@ -138,7 +138,7 @@ pip install -r requirements.txt
 ### Run the API locally
 
 ```bash
-uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+uvicorn server.app:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 ### Run the local smoke runner
@@ -218,7 +218,9 @@ Relative to the Git repository root:
 |-- Dockerfile
 |-- requirements.txt
 |-- pyproject.toml
+|-- uv.lock
 |-- agent/
+|   |-- __init__.py
 |   `-- baseline.py
 |-- env/
 |   |-- core.py
@@ -227,6 +229,9 @@ Relative to the Git repository root:
 |   |-- models.py
 |   |-- tasks.py
 |   `-- tickets.py
+|-- server/
+|   |-- __init__.py
+|   `-- app.py
 |-- tasks/
 |   |-- easy.json
 |   |-- medium.json
@@ -244,9 +249,9 @@ Relative to the Git repository root:
 ## Notes
 
 - Sessions are stored in memory, so restarting the server clears active runs.
-- `openenv.yaml` declares the app entrypoint as `app:app` on port `8000`.
+- `openenv.yaml` declares the app entrypoint as `server.app:app` on port `8000`.
 - The Dockerfile starts Uvicorn on port `7860`.
-- The repo currently depends on FastAPI, Pydantic, Uvicorn, and the OpenAI Python client.
+- The repo currently depends on FastAPI, Pydantic, Uvicorn, the OpenAI Python client, and `openenv-core`.
 
 ## Attribution
 
