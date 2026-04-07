@@ -116,6 +116,12 @@ Base URL when running locally with Uvicorn: `http://localhost:8000`
 | `GET` | `/grade/{session_id}` | Get the final grade summary |
 | `DELETE` | `/session/{session_id}` | Delete an in-memory session |
 
+## Live Deployment
+
+Public deployed API URL:
+
+- `https://tensura81-openenv.hf.space`
+
 ## Local Setup
 
 ### Requirements
@@ -197,13 +203,10 @@ The Docker image serves the app on `http://localhost:7860`.
 
 ## Test Location
 
-Main test folder:
+Relative to the Git repository root:
 
-- `./tests` (absolute path: `G:\\TraingingLLM\\tests`)
-
-Additional root-level test file:
-
-- `./test_deployed.py` (absolute path: `G:\\TraingingLLM\\test_deployed.py`)
+- `tests/`
+- `tests/test_deployed.py`
 
 ## Project Structure
 
@@ -214,6 +217,7 @@ Additional root-level test file:
 |-- openenv.yaml
 |-- Dockerfile
 |-- requirements.txt
+|-- pyproject.toml
 |-- agent/
 |   `-- baseline.py
 |-- env/

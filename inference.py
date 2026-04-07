@@ -10,7 +10,7 @@ from env.models import Action, Observation
 from env.tasks import scenario_names
 
 try:
-    from openai import OpenAI
+    from openai import OpenAI  # type: ignore
 except ImportError:  # pragma: no cover - handled at runtime for local setup failures
     OpenAI = None
 
@@ -150,7 +150,8 @@ def run_episode(
             raw_response = None
             used_fallback = False
         else:
-            assert model_name is not None
+            if model_name is None:
+                raise RuntimeError("model_name must be set when heuristic_only is False.")
             action, used_fallback, raw_response = choose_action_with_llm(client, model_name, state)
             llm_calls += 1
             fallback_actions += int(used_fallback)
