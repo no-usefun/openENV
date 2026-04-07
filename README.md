@@ -1,8 +1,8 @@
 ---
 title: OpenENV Support Triage
-emoji: 🎫
+emoji: ":ticket:"
 colorFrom: blue
-colorTo: purple
+colorTo: indigo
 sdk: docker
 app_file: app.py
 pinned: false
@@ -13,216 +13,237 @@ tags:
   - fastapi
 ---
 
-# 🎫 Support Triage OpenEnv
+# Support Triage OpenEnv
 
-> **Meta PyTorch OpenEnv Hackathon — Round 1 Submission**  
-> Team **Tensura** · [Live Space](https://huggingface.co/spaces/Tensura81/openENV)
+A deterministic customer-support ticket triage benchmark for evaluating agents on three decisions at once: routing, priority assignment, and next-action selection. The project follows an OpenEnv-style setup and includes a FastAPI app, local runners, scenario files, and a baseline policy.
 
-A deterministic, real-world **customer support ticket triage** benchmark for evaluating AI agents on routing, prioritization, and action selection — built on the [OpenEnv](https://github.com/meta-pytorch/OpenEnv) framework.
+## What This Project Simulates
 
----
+Support teams need to decide, for every incoming ticket:
 
-## 🌍 Real-World Task
+1. Which department should handle it.
+2. How urgent it is.
+3. What action should happen next.
 
-Support teams receive hundreds of tickets daily. Humans must:
-1. **Route** each ticket to the right department (billing / technical / general)
-2. **Prioritize** urgency-weighted tickets within SLA deadlines
-3. **Take action** — resolve, escalate, or request more info
+This environment turns that workflow into a reproducible benchmark with hidden labels, realistic ticket text, staged arrivals, and SLA pressure.
 
-This environment simulates exactly that workflow, with realistic ticket descriptions, staged arrival waves, and SLA time pressure.
+## Action and Observation Format
 
----
+Each step expects an action like this:
 
-## 🎮 Action & Observation Spaces
-
-### Action (per step)
 ```json
 {
   "ticket_id": "E006",
-  "department": "billing | technical | general",
-  "priority":   "low | medium | high",
-  "action_type": "resolve | escalate | request_info"
+  "department": "billing",
+  "priority": "high",
+  "action_type": "escalate"
 }
 ```
 
-### Observation (returned after each step)
+The environment returns an observation shaped like this:
+
 ```json
 {
   "current_ticket": {
     "id": "E006",
     "category_hint": "technical",
-    "description": "Users cannot log in — account appears suspended.",
+    "specialist_team": "account_access",
+    "description": "Users cannot log in and the account appears suspended.",
     "urgency": 5,
     "customer_tier": "premium",
     "time_waiting": 85
   },
-  "pending_tickets": [...],
+  "pending_tickets": [],
   "pending_count": 9,
   "resolved_count": 1,
   "current_time": 2,
-  "step_number": 2
+  "step_number": 2,
+  "resolved_tickets": []
 }
 ```
 
-> Ground truth labels stay **hidden** from the agent during play.
+Ground-truth labels are kept hidden from the acting agent.
 
----
+## Available Scenarios
 
-## 📋 Tasks (Easy → Medium → Hard)
+The repo currently exposes the canonical scenarios discovered from `tasks/*.json`:
 
-| Scenario | Tickets | Arrivals | Max Steps | Avg Heuristic Score |
-|---|---|---|---|---|
-| `easy` | 10 | None | 12 | **0.9375** |
-| `medium` | 15 | 2 staged waves | 16 | **0.8900** |
-| `hard` | 25 | Continuous waves | 22 | **0.7758** |
+| Scenario | Tickets | Arrival Pattern | Default Max Steps |
+|---|---:|---|---:|
+| `easy` | 10 | No new arrivals | 12 |
+| `medium` | 15 | Two staged waves | 16 |
+| `hard` | 25 | Continuous arrivals | 22 |
 
-### Difficulty progression
-- **Easy**: Simple tickets with accurate category hints, no time pressure
-- **Medium**: Ambiguous tickets, staged arrivals that interrupt workflow, moderate SLA pressure
-- **Hard**: Misleading hints, continuous new arrivals, SLA deadlines for 11 high-priority tickets, fewer steps than total tickets
+Difficulty increases through more ambiguous ticket language, more interruptions, and stronger SLA pressure.
 
----
+## Scoring
 
-## 📊 Scoring
+### Step reward
 
-### Step Reward
 | Event | Score |
-|---|---|
+|---|---:|
 | Correct department | `+0.20` |
 | Correct priority | `+0.15` |
 | Correct action | `+0.10` |
-| Wrong department | `−0.30` |
-| Skip urgent ticket (urgency ≥ 4) | `−0.50` |
-| Time delay penalty | `−0.05 × current_time` |
+| Wrong department | `-0.30` |
+| Skip urgent ticket (`urgency >= 4`) | `-0.50` |
+| Time delay penalty | `-0.05 * current_time` |
 
-### Final Score (weighted average)
+### Final grade
+
+```text
+final_score = 0.35 * routing_accuracy
+            + 0.25 * priority_accuracy
+            + 0.25 * sla_score
+            + 0.15 * action_accuracy
 ```
-final_score = 0.35 × routing_accuracy
-            + 0.25 × priority_accuracy
-            + 0.25 × sla_score
-            + 0.15 × action_accuracy
-```
 
-SLA targets: high-priority tickets must be handled within **3 steps** of appearing.
+High-priority tickets are expected to be handled within 3 steps of appearing.
 
----
+## API Endpoints
 
-## 🚀 API Endpoints
-
-Base URL: `https://tensura81-openenv.hf.space`
+Base URL when running locally with Uvicorn: `http://localhost:8000`
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/health` | Health check + available routes |
+| `GET` | `/` | Root metadata, routes, and scenario list |
+| `GET` | `/health` | Health check |
 | `GET` | `/tasks` | List available scenarios |
-| `POST` | `/reset?scenario_name=easy` | Start a new episode |
-| `GET` | `/state/{session_id}` | Get current environment state |
-| `POST` | `/step/{session_id}` | Submit action, get next state + reward |
-| `GET` | `/grade/{session_id}` | Get final episode grade |
+| `GET` | `/reset` | Create a session using query parameters |
+| `POST` | `/reset` | Create a session using a JSON body |
+| `GET` | `/state/{session_id}` | Fetch the current observation |
+| `POST` | `/step/{session_id}` | Submit one action |
+| `GET` | `/grade/{session_id}` | Get the final grade summary |
+| `DELETE` | `/session/{session_id}` | Delete an in-memory session |
 
-### Example Full Episode
+## Local Setup
 
-```python
-import requests
+### Requirements
 
-BASE = "https://tensura81-openenv.hf.space"
+- Python 3.10+
+- `pip`
 
-# 1. Start episode
-r = requests.post(f"{BASE}/reset", params={"scenario_name": "easy"})
-session_id = r.json()["session_id"]
-
-done = False
-while not done:
-    # 2. Get current ticket
-    state = requests.get(f"{BASE}/state/{session_id}").json()
-    ticket = state["current_ticket"]
-
-    # 3. Submit action (always use current_ticket id)
-    action = {
-        "ticket_id": ticket["id"],
-        "department": "technical",
-        "priority": "high",
-        "action_type": "escalate"
-    }
-    result = requests.post(f"{BASE}/step/{session_id}", json=action).json()
-    done = result["done"]
-
-# 4. Get final score
-grade = requests.get(f"{BASE}/grade/{session_id}").json()
-print(grade["grade"]["final_score"])  # e.g. 0.9375
-```
-
----
-
-## 🏃 Running the Baseline
+### Install dependencies
 
 ```bash
-# Clone & install
-git clone https://huggingface.co/spaces/Tensura81/openENV
-cd openENV
 pip install -r requirements.txt
-
-# Set LLM credentials (judges provide their own)
-export HF_TOKEN=your_token
-export MODEL_NAME=meta-llama/Llama-3.3-70B-Instruct
-export API_BASE_URL=https://router.huggingface.co/v1
-
-# Run baseline inference (all 3 scenarios)
-python inference.py
-
-# Run heuristic-only (no API key needed)
-python inference.py --heuristic-only
-
-# Run unit tests
-python -m unittest discover -s tests -v
 ```
 
-### Baseline Scores (Heuristic Agent)
+### Run the API locally
 
-| Scenario | Routing | Priority | SLA | Action | **Final** |
-|---|---|---|---|---|---|
-| Easy | 100% | 90% | 100% | 80% | **0.9375** |
-| Medium | 86.7% | 86.7% | 100% | 80% | **0.8900** |
-| Hard | 80% | 80% | 72.7% | 76% | **0.7758** |
-| **Average** | | | | | **0.8678** |
+```bash
+uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+```
 
----
+### Run the local smoke runner
 
-## 🐳 Docker
+```bash
+python app.py easy
+python app.py medium
+python app.py hard
+```
+
+## Inference Runner
+
+`inference.py` can run either:
+
+- the built-in heuristic baseline
+- an OpenAI-compatible chat-completions model
+
+### Heuristic-only mode
+
+```bash
+python inference.py --heuristic-only
+python inference.py --scenario medium --heuristic-only
+```
+
+### OpenAI-compatible mode
+
+PowerShell:
+
+```powershell
+$env:OPENAI_API_KEY="your_api_key"
+$env:MODEL_NAME="gpt-4.1-mini"
+$env:API_BASE_URL="https://api.openai.com/v1"
+```
+
+Bash:
+
+```bash
+export OPENAI_API_KEY=your_api_key
+export MODEL_NAME=gpt-4.1-mini
+export API_BASE_URL=https://api.openai.com/v1
+```
+
+Then run:
+
+```bash
+python inference.py
+python inference.py --scenario hard
+```
+
+If the model response is malformed or selects a ticket that is not pending, the runner falls back to the heuristic policy.
+
+## Docker
+
+Build and run the container with:
 
 ```bash
 docker build -t support-triage-env .
 docker run -p 7860:7860 support-triage-env
-# API available at http://localhost:7860
 ```
 
----
+The Docker image serves the app on `http://localhost:7860`.
 
-## 📁 Project Structure
+## Test Location
 
+Main test folder:
+
+- `./tests` (absolute path: `G:\\TraingingLLM\\tests`)
+
+Additional root-level test file:
+
+- `./test_deployed.py` (absolute path: `G:\\TraingingLLM\\test_deployed.py`)
+
+## Project Structure
+
+```text
+.
+|-- app.py
+|-- inference.py
+|-- openenv.yaml
+|-- Dockerfile
+|-- requirements.txt
+|-- agent/
+|   `-- baseline.py
+|-- env/
+|   |-- core.py
+|   |-- environment.py
+|   |-- grader.py
+|   |-- models.py
+|   |-- tasks.py
+|   `-- tickets.py
+|-- tasks/
+|   |-- easy.json
+|   |-- medium.json
+|   `-- hard.json
+|-- tests/
+|   |-- test_api.py
+|   |-- test_deployed.py
+|   |-- test_environment.py
+|   |-- test_grader.py
+|   |-- test_inference.py
+|   `-- test_tasks.py
+`
 ```
-├── app.py              # FastAPI server (reset/step/state/grade endpoints)
-├── inference.py        # Baseline LLM + heuristic inference runner
-├── openenv.yaml        # OpenEnv environment manifest
-├── Dockerfile          # Container configuration
-├── requirements.txt    # Dependencies
-├── agent/
-│   └── baseline.py     # Rule-based heuristic policy
-├── env/
-│   ├── core.py         # Environment step/reset logic + SLA tracking
-│   ├── grader.py       # Final scoring and grade computation
-│   ├── models.py       # Typed Pydantic models (Action, Observation, Ticket)
-│   └── tasks.py        # Scenario loader
-└── tasks/
-    ├── easy.json        # 10 tickets, no arrivals
-    ├── medium.json      # 15 tickets, 2 arrival waves
-    └── hard.json        # 25 tickets, continuous arrivals
-```
 
----
+## Notes
 
-## 🏆 Hackathon
+- Sessions are stored in memory, so restarting the server clears active runs.
+- `openenv.yaml` declares the app entrypoint as `app:app` on port `8000`.
+- The Dockerfile starts Uvicorn on port `7860`.
+- The repo currently depends on FastAPI, Pydantic, Uvicorn, and the OpenAI Python client.
 
-Built for the **[Meta PyTorch OpenEnv Hackathon](https://www.scaler.com/school-of-technology/meta-pytorch-hackathon)** by Team **Tensura**.
+## Attribution
 
-Thank you very much.!
+Built for the Meta PyTorch OpenEnv Hackathon by Team Tensura.
