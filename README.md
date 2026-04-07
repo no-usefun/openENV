@@ -4,7 +4,7 @@ emoji: "🎫"
 colorFrom: blue
 colorTo: indigo
 sdk: docker
-app_file: app.py
+app_file: server/app.py
 pinned: false
 tags:
   - openenv
@@ -165,20 +165,26 @@ python inference.py --scenario medium --heuristic-only
 
 ### OpenAI-compatible mode
 
+Required environment variables for hackathon evaluation:
+
+- `HF_TOKEN`
+- `API_BASE_URL`
+- `MODEL_NAME`
+
 PowerShell:
 
 ```powershell
-$env:OPENAI_API_KEY="your_api_key"
-$env:MODEL_NAME="gpt-4.1-mini"
-$env:API_BASE_URL="https://api.openai.com/v1"
+$env:HF_TOKEN="your_api_key"
+$env:MODEL_NAME="meta-llama/Llama-3.3-70B-Instruct"
+$env:API_BASE_URL="https://router.huggingface.co/v1"
 ```
 
 Bash:
 
 ```bash
-export OPENAI_API_KEY=your_api_key
-export MODEL_NAME=gpt-4.1-mini
-export API_BASE_URL=https://api.openai.com/v1
+export HF_TOKEN=your_api_key
+export MODEL_NAME=meta-llama/Llama-3.3-70B-Instruct
+export API_BASE_URL=https://router.huggingface.co/v1
 ```
 
 Then run:
@@ -188,7 +194,7 @@ python inference.py
 python inference.py --scenario hard
 ```
 
-If the model response is malformed or selects a ticket that is not pending, the runner falls back to the heuristic policy.
+The script emits structured stdout logs in `[START]`, `[STEP]`, and `[END]` format for each scenario. If credentials are missing or the model response is malformed, it falls back to the heuristic policy instead of exiting with an error.
 
 ## Docker
 
@@ -243,13 +249,13 @@ Relative to the Git repository root:
 |   |-- test_grader.py
 |   |-- test_inference.py
 |   `-- test_tasks.py
-`
+```
 ```
 
 ## Notes
 
 - Sessions are stored in memory, so restarting the server clears active runs.
-- `openenv.yaml` declares the app entrypoint as `server.app:app` on port `8000`.
+- `openenv.yaml` declares the app entrypoint as `server.app:app` on port `7860`.
 - The Dockerfile starts Uvicorn on port `7860`.
 - The repo currently depends on FastAPI, Pydantic, Uvicorn, the OpenAI Python client, and `openenv-core`.
 

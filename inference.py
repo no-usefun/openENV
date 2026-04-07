@@ -1,9 +1,9 @@
-import argparse
+﻿import argparse
 import json
 import os
+import sys
 from typing import Any, Dict, List, Optional, Tuple
 
-from agent.baseline import choose_action as heuristic_choose_action
 from agent.baseline import choose_action_from_observation as heuristic_choose_action_from_observation
 from env.core import TicketEnv
 from env.models import Action, Observation
@@ -11,60 +11,56 @@ from env.tasks import scenario_names
 
 try:
     from openai import OpenAI  # type: ignore
-except ImportError:  # pragma: no cover - handled at runtime for local setup failures
+except ImportError:  # pragma: no cover
     OpenAI = None
 
 
-DEFAULT_BASE_URL = "https://api.openai.com/v1"
+API_KEY = os.getenv("HF_TOKEN") or os.getenv("OPENAI_API_KEY") or os.getenv("API_KEY")
+API_BASE_URL = os.getenv("API_BASE_URL") or "https://router.huggingface.co/v1"
+MODEL_NAME = os.getenv("MODEL_NAME") or "meta-llama/Llama-3.3-70B-Instruct"
+BENCHMARK = os.getenv("OPENENV_BENCHMARK") or "support-triage-env"
+SUCCESS_SCORE_THRESHOLD = 0.1
+
 SYSTEM_PROMPT = """You are a support triage agent. Choose ONE pending ticket to handle next.
 Return a JSON object with exactly these keys: ticket_id, department, priority, action_type.
 
-## TICKET SELECTION — THIS IS CRITICAL
-- HIGH-PRIORITY tickets (urgency >= 4) have a strict SLA: they MUST be handled within 3 steps of appearing.
-- Always handle ALL urgency 5 tickets first, then urgency 4, then the rest.
-- Among equal urgency, prefer tickets with higher time_waiting.
-- NEVER skip an urgency >= 4 ticket to handle a lower one — this incurs a -0.5 penalty.
-
-## DEPARTMENT RULES
-**billing**: The issue involves money — refunds, charges, invoices, payments, subscriptions, renewals, billing statements, pricing disputes, plan downgrades with billing impact.
-**technical**: The issue involves system failures — login/access failures, crashes, bugs, HTTP errors (500/401/504), slow performance, timeouts, sync failures, authentication (2FA/OTP), suspended accounts, webhooks, API issues.
-**general**: The issue is a question or inquiry — "how do I", "does X support", "is there a way to", "do you offer", feature questions, plan comparisons.
-
-Key rules:
-- Route from the SYMPTOM, not the product name. "Billing System crashes" → technical.
-- "cancelled unexpectedly and I need clarification" → billing (subscription issue).
-- Feature/plan/how-to questions → general, UNLESS they mention refund/payment → billing.
-- Use specialist_team as a tiebreaker when text is ambiguous: payments_ops/refunds/subscription_ops → billing; account_access/security/product_bug/platform_reliability → technical; sales_ops → general.
-
-## PRIORITY RULES
-- urgency >= 4 → "high"
-- urgency 2-3 → "medium"
-- urgency 1 → "low"
-- EXCEPTION: general inquiry questions → always "low"
-- EXCEPTION: simple billing (refund, invoice inquiry) with urgency <= 2 → "low"
-
-## ACTION TYPE RULES
-**request_info**: Ticket is VAGUE — missing key details. Look for: "not sure which", "don't know", "I think", "I guess", "maybe", very short descriptions (4 words or fewer), hedging language. Example: "payment looks wrong, not sure which invoice or workspace".
-**escalate**: Access is blocked, login/2FA/OTP failures, account suspension, outages, HTTP errors, crashes, data sync issues. For billing: only when payment is actively blocking access ("whole team lost access", "workspace shows unpaid", "payment failed and can't access").
-**resolve**: Everything else — general questions, clear billing issues (refunds, invoices), straightforward technical fixes.
+Rules:
+- Prefer the most urgent pending ticket.
+- Use billing for payment, charges, invoices, renewals, refunds.
+- Use technical for login issues, crashes, bugs, sync failures, API problems.
+- Use general for informational or how-to requests.
+- Use high priority for urgency >= 4, medium for urgency 2-3, else low.
+- Use request_info for vague issues, escalate for severe blocked access or technical failures, resolve otherwise.
 
 Return JSON only. No markdown fences, no explanation."""
 
 
+def log_start(task: str, env: str, model: str) -> None:
+    print(f"[START] task={task} env={env} model={model}", flush=True)
+
+
+def log_step(step: int, action: str, reward: float, done: bool, error: Optional[str]) -> None:
+    error_value = error if error else "null"
+    print(
+        f"[STEP] step={step} action={action} reward={reward:.2f} done={str(done).lower()} error={error_value}",
+        flush=True,
+    )
+
+
+def log_end(success: bool, steps: int, score: float, rewards: List[float]) -> None:
+    rewards_str = ",".join(f"{reward:.2f}" for reward in rewards)
+    print(
+        f"[END] success={str(success).lower()} steps={steps} score={score:.3f} rewards={rewards_str}",
+        flush=True,
+    )
+
+
 def build_client() -> Tuple[Any, str]:
     if OpenAI is None:
-        raise RuntimeError("The openai package is not installed. Run `pip install -r requirements.txt` first.")
-
-    api_key = os.getenv("OPENAI_API_KEY") or os.getenv("HF_TOKEN")
-    if not api_key:
-        raise RuntimeError("Set OPENAI_API_KEY or HF_TOKEN before running inference.py.")
-
-    model_name = os.getenv("MODEL_NAME")
-    if not model_name:
-        raise RuntimeError("Set MODEL_NAME before running inference.py.")
-
-    base_url = os.getenv("API_BASE_URL", DEFAULT_BASE_URL)
-    return OpenAI(api_key=api_key, base_url=base_url), model_name
+        raise RuntimeError("The openai package is not installed.")
+    if not API_KEY:
+        raise RuntimeError("HF_TOKEN or OPENAI_API_KEY is not set.")
+    return OpenAI(api_key=API_KEY, base_url=API_BASE_URL), MODEL_NAME
 
 
 def build_observation_payload(observation: Observation) -> Dict[str, Any]:
@@ -76,33 +72,6 @@ def build_observation_payload(observation: Observation) -> Dict[str, Any]:
         "current_ticket": observation.current_ticket.model_dump() if observation.current_ticket else None,
         "pending_tickets": [ticket.model_dump() for ticket in observation.pending_tickets],
     }
-
-
-def choose_action_with_llm(client: Any, model_name: str, observation: Observation) -> Tuple[Action, bool, str]:
-    if observation.current_ticket is None:
-        raise RuntimeError("Cannot choose an action without a current ticket.")
-
-    user_payload = build_observation_payload(observation)
-    response = client.chat.completions.create(
-        model=model_name,
-        temperature=0,
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": json.dumps(user_payload, indent=2)},
-        ],
-    )
-    content = response.choices[0].message.content or ""
-
-    try:
-        action = Action.model_validate(json.loads(extract_json_object(content)))
-        pending_ids = {ticket.id for ticket in observation.pending_tickets}
-        if action.ticket_id not in pending_ids:
-            raise ValueError("Model selected a ticket that is not pending.")
-        return action, False, content
-    except Exception:
-        # Keep the baseline reproducible and non-brittle even if the model emits malformed JSON.
-        fallback = heuristic_choose_action_from_observation(observation)
-        return fallback, True, content
 
 
 def extract_json_object(text: str) -> str:
@@ -118,8 +87,32 @@ def extract_json_object(text: str) -> str:
     return cleaned[start : end + 1]
 
 
+def choose_action_with_llm(client: Any, model_name: str, observation: Observation) -> Tuple[Action, bool]:
+    if observation.current_ticket is None:
+        raise RuntimeError("Cannot choose an action without a current ticket.")
+
+    payload = build_observation_payload(observation)
+    try:
+        response = client.chat.completions.create(
+            model=model_name,
+            temperature=0,
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": json.dumps(payload, indent=2)},
+            ],
+        )
+        content = response.choices[0].message.content or ""
+        action = Action.model_validate(json.loads(extract_json_object(content)))
+        pending_ids = {ticket.id for ticket in observation.pending_tickets}
+        if action.ticket_id not in pending_ids:
+            raise ValueError("Model selected a ticket that is not pending.")
+        return action, False
+    except Exception:
+        return heuristic_choose_action_from_observation(observation), True
+
+
 def run_episode(
-    scenario_name: str = "easy",
+    scenario_name: str,
     heuristic_only: bool = False,
     max_steps: Optional[int] = None,
     client: Any = None,
@@ -130,83 +123,170 @@ def run_episode(
         config["max_steps"] = max_steps
 
     env = TicketEnv(config)
-    state = env.reset()
-    done = False
-    llm_calls = 0
-    fallback_actions = 0
+    rewards: List[float] = []
     trace: List[Dict[str, Any]] = []
     first_seen_at: Dict[str, int] = {}
+    llm_calls = 0
+    fallback_actions = 0
+    success = False
+    final_score = 0.0
+    steps_taken = 0
+    model_label = model_name if not heuristic_only and model_name else "heuristic-baseline"
 
-    while not done:
-        for pending_ticket in state.pending_tickets:
-            first_seen_at.setdefault(pending_ticket.id, state.current_time)
+    log_start(task=scenario_name, env=BENCHMARK, model=model_label)
 
-        ticket = state.current_ticket
-        if ticket is None:
-            break
+    try:
+        state = env.reset()
+        done = False
 
-        if heuristic_only:
-            action = heuristic_choose_action_from_observation(state, first_seen_at)
-            raw_response = None
-            used_fallback = False
-        else:
-            if model_name is None:
-                raise RuntimeError("model_name must be set when heuristic_only is False.")
-            action, used_fallback, raw_response = choose_action_with_llm(client, model_name, state)
-            llm_calls += 1
-            fallback_actions += int(used_fallback)
+        while not done:
+            for pending_ticket in state.pending_tickets:
+                first_seen_at.setdefault(pending_ticket.id, state.current_time)
 
-        state, reward, done, info = env.step(action)
-        trace.append(
-            {
-                "ticket_id": action.ticket_id,
-                "reward": reward.step_score,
-                "total_score": reward.total_score,
-                "done": done,
-                "used_fallback": used_fallback,
-                "raw_response": raw_response,
-            }
+            if state.current_ticket is None:
+                break
+
+            if heuristic_only or client is None or model_name is None:
+                action = heuristic_choose_action_from_observation(state, first_seen_at)
+                used_fallback = False
+            else:
+                action, used_fallback = choose_action_with_llm(client, model_name, state)
+                llm_calls += 1
+                fallback_actions += int(used_fallback)
+
+            next_state, reward, done, info = env.step(action)
+            steps_taken += 1
+            rewards.append(reward.step_score)
+
+            action_str = json.dumps(action.model_dump(), separators=(",", ":"))
+            last_error = info.get("error") if isinstance(info, dict) else None
+            log_step(
+                step=steps_taken,
+                action=action_str,
+                reward=reward.step_score,
+                done=done,
+                error=last_error,
+            )
+
+            trace.append(
+                {
+                    "ticket_id": action.ticket_id,
+                    "reward": reward.step_score,
+                    "total_score": reward.total_score,
+                    "done": done,
+                    "used_fallback": used_fallback,
+                    "error": last_error,
+                }
+            )
+            state = next_state
+
+        grade = env.grade().model_dump()
+        final_score = max(0.0, min(1.0, float(grade["final_score"])))
+        success = final_score >= SUCCESS_SCORE_THRESHOLD
+        return {
+            "scenario": scenario_name,
+            "model_name": model_label,
+            "steps_taken": steps_taken,
+            "llm_calls": llm_calls,
+            "fallback_actions": fallback_actions,
+            "grade": grade,
+            "trace": trace,
+        }
+    except Exception as exc:
+        print(f"Warning: scenario '{scenario_name}' failed: {exc}", file=sys.stderr)
+        return {
+            "scenario": scenario_name,
+            "model_name": model_label,
+            "steps_taken": steps_taken,
+            "llm_calls": llm_calls,
+            "fallback_actions": fallback_actions,
+            "grade": {
+                "routing_accuracy": 0.0,
+                "priority_accuracy": 0.0,
+                "sla_score": 0.0,
+                "action_accuracy": 0.0,
+                "final_score": 0.0,
+                "total_tickets": 0,
+                "processed_tickets": 0,
+                "late_high_priority": 0,
+                "total_high_priority": 0,
+            },
+            "trace": trace,
+            "error": str(exc),
+        }
+    finally:
+        close_method = getattr(env, "close", None)
+        if callable(close_method):
+            try:
+                close_method()
+            except Exception as exc:
+                print(f"Warning: env.close() failed: {exc}", file=sys.stderr)
+        log_end(success=success, steps=steps_taken, score=final_score, rewards=rewards)
+
+
+def run_single_task(
+    scenario_name: str,
+    heuristic_only: bool = False,
+    max_steps: Optional[int] = None,
+) -> Dict[str, Any]:
+    if heuristic_only:
+        return run_episode(scenario_name=scenario_name, heuristic_only=True, max_steps=max_steps)
+
+    try:
+        client, model_name = build_client()
+        return run_episode(
+            scenario_name=scenario_name,
+            heuristic_only=False,
+            max_steps=max_steps,
+            client=client,
+            model_name=model_name,
         )
-
-    grade = env.grade()
-    return {
-        "scenario": scenario_name,
-        "model_name": model_name if not heuristic_only else "heuristic-baseline",
-        "steps_taken": len(trace),
-        "llm_calls": llm_calls,
-        "fallback_actions": fallback_actions,
-        "grade": grade.model_dump(),
-        "trace": trace,
-    }
+    except Exception as exc:
+        print(
+            f"Warning: falling back to heuristic inference for scenario '{scenario_name}': {exc}",
+            file=sys.stderr,
+        )
+        return run_episode(scenario_name=scenario_name, heuristic_only=True, max_steps=max_steps)
 
 
 def run_all_tasks(
     heuristic_only: bool = False,
     max_steps: Optional[int] = None,
 ) -> Dict[str, Any]:
+    requested_runner = "heuristic" if heuristic_only else "openai-client"
+    runner = requested_runner
     client = None
     model_name = None
+
     if not heuristic_only:
-        client, model_name = build_client()
+        try:
+            client, model_name = build_client()
+        except Exception as exc:
+            heuristic_only = True
+            runner = "heuristic-fallback"
+            print(f"Warning: falling back to heuristic inference because LLM setup failed: {exc}", file=sys.stderr)
 
-    reports = [
-        run_episode(
-            scenario_name=name,
-            heuristic_only=heuristic_only,
-            max_steps=max_steps,
-            client=client,
-            model_name=model_name,
-        )
-        for name in scenario_names()
-    ]
+    reports = []
+    for name in scenario_names():
+        if heuristic_only:
+            reports.append(run_episode(scenario_name=name, heuristic_only=True, max_steps=max_steps))
+        else:
+            reports.append(
+                run_episode(
+                    scenario_name=name,
+                    heuristic_only=False,
+                    max_steps=max_steps,
+                    client=client,
+                    model_name=model_name,
+                )
+            )
 
-    average_score = round(
-        sum(report["grade"]["final_score"] for report in reports) / len(reports),
-        4,
-    )
+    scores = [float(report["grade"]["final_score"]) for report in reports]
+    average_score = round(sum(scores) / len(scores), 4) if scores else 0.0
     return {
-        "runner": "openai-client" if not heuristic_only else "heuristic",
-        "model_name": model_name if not heuristic_only else "heuristic-baseline",
+        "runner": runner,
+        "requested_runner": requested_runner,
+        "model_name": model_name if model_name else "heuristic-baseline",
         "average_final_score": average_score,
         "tasks": reports,
     }
@@ -219,22 +299,18 @@ def main() -> None:
     parser.add_argument("--max-steps", type=int, default=None)
     args = parser.parse_args()
 
-    if args.scenario == "all":
-        report = run_all_tasks(heuristic_only=args.heuristic_only, max_steps=args.max_steps)
-    else:
-        client = None
-        model_name = None
-        if not args.heuristic_only:
-            client, model_name = build_client()
-        report = run_episode(
-            scenario_name=args.scenario,
-            heuristic_only=args.heuristic_only,
-            max_steps=args.max_steps,
-            client=client,
-            model_name=model_name,
-        )
-
-    print(json.dumps(report, indent=2))
+    try:
+        if args.scenario == "all":
+            run_all_tasks(heuristic_only=args.heuristic_only, max_steps=args.max_steps)
+        else:
+            run_single_task(
+                scenario_name=args.scenario,
+                heuristic_only=args.heuristic_only,
+                max_steps=args.max_steps,
+            )
+    except Exception as exc:
+        print(f"Fatal inference error: {exc}", file=sys.stderr)
+        run_all_tasks(heuristic_only=True, max_steps=args.max_steps)
 
 
 if __name__ == "__main__":
