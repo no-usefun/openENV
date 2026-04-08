@@ -13,6 +13,7 @@
     {
       "id": "E001",
       "category_hint": "billing",
+      "specialist_team": "subscription_ops",
       "description": "My enterprise subscription for Payment Gateway was cancelled unexpectedly and I need clarification.",
       "urgency": 3,
       "customer_tier": "premium",
