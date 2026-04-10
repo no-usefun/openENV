@@ -15,7 +15,15 @@ except ImportError:  # pragma: no cover - handled at runtime for local setup fai
     OpenAI = None
 
 
+<<<<<<< Updated upstream
 DEFAULT_BASE_URL = "https://api.openai.com/v1"
+=======
+DEFAULT_API_BASE_URL = "https://router.huggingface.co/v1"
+DEFAULT_MODEL_NAME = "meta-llama/Llama-3.3-70B-Instruct"
+BENCHMARK = os.getenv("OPENENV_BENCHMARK") or "support-triage-env"
+SUCCESS_SCORE_THRESHOLD = 0.1
+
+>>>>>>> Stashed changes
 SYSTEM_PROMPT = """You are a support triage agent. Choose ONE pending ticket to handle next.
 Return a JSON object with exactly these keys: ticket_id, department, priority, action_type.
 
@@ -52,7 +60,12 @@ Return JSON only. No markdown fences, no explanation."""
 
 
 def build_client() -> Tuple[Any, str]:
+    api_key = os.getenv("HF_TOKEN") or os.getenv("OPENAI_API_KEY") or os.getenv("API_KEY")
+    api_base_url = os.getenv("API_BASE_URL") or DEFAULT_API_BASE_URL
+    model_name = os.getenv("MODEL_NAME") or DEFAULT_MODEL_NAME
+
     if OpenAI is None:
+<<<<<<< Updated upstream
         raise RuntimeError("The openai package is not installed. Run `pip install -r requirements.txt` first.")
 
     api_key = os.getenv("OPENAI_API_KEY") or os.getenv("HF_TOKEN")
@@ -65,6 +78,12 @@ def build_client() -> Tuple[Any, str]:
 
     base_url = os.getenv("API_BASE_URL", DEFAULT_BASE_URL)
     return OpenAI(api_key=api_key, base_url=base_url), model_name
+=======
+        raise RuntimeError("The openai package is not installed.")
+    if not api_key:
+        raise RuntimeError("HF_TOKEN or OPENAI_API_KEY is not set.")
+    return OpenAI(api_key=api_key, base_url=api_base_url), model_name
+>>>>>>> Stashed changes
 
 
 def build_observation_payload(observation: Observation) -> Dict[str, Any]:
