@@ -56,6 +56,8 @@ scenerio.json
 tmp*/
 temp*/
 *.tmp
+commit_diff.txt
+old_inference.py
 
 # python cache
 __pycache__/

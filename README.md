@@ -1,10 +1,10 @@
 ---
 title: OpenENV Support Triage
-emoji: "🎫"
+emoji: "ticket"
 colorFrom: blue
 colorTo: indigo
 sdk: docker
-app_file: server/app.py
+app_port: 7860
 pinned: false
 tags:
   - openenv
@@ -15,7 +15,7 @@ tags:
 
 # Support Triage OpenEnv
 
-A deterministic customer-support ticket triage benchmark for evaluating agents on three decisions at once: routing, priority assignment, and next-action selection. The project follows an OpenEnv-style setup and includes a FastAPI app, local runners, scenario files, and a baseline policy.
+A deterministic customer-support ticket triage benchmark for evaluating routing, prioritization, and next-action selection under time pressure.
 
 ## What This Project Simulates
 
@@ -27,14 +27,14 @@ Support teams need to decide, for every incoming ticket:
 
 This environment turns that workflow into a reproducible benchmark with hidden labels, realistic ticket text, staged arrivals, and SLA pressure.
 
-## Action and Observation Format
+## Action And Observation Format
 
 Each step expects an action like this:
 
 ```json
 {
   "ticket_id": "E006",
-  "department": "billing",
+  "department": "technical",
   "priority": "high",
   "action_type": "escalate"
 }
@@ -62,11 +62,11 @@ The environment returns an observation shaped like this:
 }
 ```
 
-Ground-truth labels are kept hidden from the acting agent.
+Ground-truth labels remain hidden from the acting agent.
 
 ## Available Scenarios
 
-The repo currently exposes the canonical scenarios discovered from `tasks/*.json`:
+The repo currently exposes three task files from `tasks/*.json`:
 
 | Scenario | Tickets | Arrival Pattern | Default Max Steps |
 |---|---:|---|---:|
@@ -74,7 +74,7 @@ The repo currently exposes the canonical scenarios discovered from `tasks/*.json
 | `medium` | 15 | Two staged waves | 16 |
 | `hard` | 25 | Continuous arrivals | 22 |
 
-Difficulty increases through more ambiguous ticket language, more interruptions, and stronger SLA pressure.
+Difficulty increases through noisier hints, more interruptions, and stronger SLA pressure.
 
 ## Scoring
 
@@ -98,11 +98,9 @@ final_score = 0.35 * routing_accuracy
             + 0.15 * action_accuracy
 ```
 
-High-priority tickets are expected to be handled within 3 steps of appearing.
-
 ## API Endpoints
 
-Base URL when running locally with Uvicorn: `http://localhost:8000`
+Base URL when running locally with Docker or Uvicorn: `http://localhost:7860`
 
 | Method | Endpoint | Description |
 |---|---|---|
@@ -122,12 +120,14 @@ Public deployed API URL:
 
 - `https://tensura81-openenv.hf.space`
 
+Quick checks:
+
+```text
+https://tensura81-openenv.hf.space/health
+https://tensura81-openenv.hf.space/reset
+```
+
 ## Local Setup
-
-### Requirements
-
-- Python 3.10+
-- `pip`
 
 ### Install dependencies
 
@@ -138,7 +138,14 @@ pip install -r requirements.txt
 ### Run the API locally
 
 ```bash
-uvicorn server.app:app --host 0.0.0.0 --port 8000 --reload
+uvicorn server.app:app --host 0.0.0.0 --port 7860 --reload
+```
+
+### Run the Docker image locally
+
+```bash
+docker build -t support-triage-env .
+docker run -p 7860:7860 support-triage-env
 ```
 
 ### Run the local smoke runner
@@ -151,10 +158,10 @@ python app.py hard
 
 ## Inference Runner
 
-`inference.py` can run either:
+`inference.py` supports:
 
-- the built-in heuristic baseline
-- an OpenAI-compatible chat-completions model
+- heuristic-only mode
+- OpenAI-client mode against an OpenAI-compatible endpoint
 
 ### Heuristic-only mode
 
@@ -167,7 +174,7 @@ python inference.py --scenario medium --heuristic-only
 
 Required environment variables for hackathon evaluation:
 
-- `HF_TOKEN`
+- `HF_TOKEN` or `OPENAI_API_KEY`
 - `API_BASE_URL`
 - `MODEL_NAME`
 
@@ -177,6 +184,7 @@ PowerShell:
 $env:HF_TOKEN="your_api_key"
 $env:MODEL_NAME="meta-llama/Llama-3.3-70B-Instruct"
 $env:API_BASE_URL="https://router.huggingface.co/v1"
+python inference.py
 ```
 
 Bash:
@@ -185,34 +193,17 @@ Bash:
 export HF_TOKEN=your_api_key
 export MODEL_NAME=meta-llama/Llama-3.3-70B-Instruct
 export API_BASE_URL=https://router.huggingface.co/v1
-```
-
-Then run:
-
-```bash
 python inference.py
-python inference.py --scenario hard
 ```
 
-The script emits structured stdout logs in `[START]`, `[STEP]`, and `[END]` format for each scenario. If credentials are missing or the model response is malformed, it falls back to the heuristic policy instead of exiting with an error.
+If credentials are missing or the model response is malformed, the script falls back to the heuristic policy instead of exiting with an error.
 
-## Docker
+## Deployment Files
 
-Build and run the container with:
-
-```bash
-docker build -t support-triage-env .
-docker run -p 7860:7860 support-triage-env
-```
-
-The Docker image serves the app on `http://localhost:7860`.
-
-## Test Location
-
-Relative to the Git repository root:
-
-- `tests/`
-- `tests/test_deployed.py`
+- [openenv.yaml](C:/project/openEnv/openENV2/openENV/openenv.yaml): OpenEnv runtime metadata
+- [Dockerfile](C:/project/openEnv/openENV2/openENV/Dockerfile): container entrypoint and dependencies
+- [server/app.py](C:/project/openEnv/openENV2/openENV/server/app.py): FastAPI app used by Docker/HF Space
+- [inference.py](C:/project/openEnv/openENV2/openENV/inference.py): baseline runner used by validation
 
 ## Project Structure
 
@@ -250,14 +241,17 @@ Relative to the Git repository root:
 |   |-- test_inference.py
 |   `-- test_tasks.py
 ```
-```
 
 ## Notes
 
 - Sessions are stored in memory, so restarting the server clears active runs.
 - `openenv.yaml` declares the app entrypoint as `server.app:app` on port `7860`.
 - The Dockerfile starts Uvicorn on port `7860`.
-- The repo currently depends on FastAPI, Pydantic, Uvicorn, the OpenAI Python client, and `openenv-core`.
+- The local Docker verification path is:
+  - `GET /health`
+  - `GET /reset`
+  - `POST /step/{session_id}`
+  - `GET /grade/{session_id}`
 
 ## Attribution
 
