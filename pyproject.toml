@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "support-triage-openenv"
+version = "0.1.0"
+description = "OpenEnv-style support ticket triage benchmark with FastAPI endpoints and baseline inference."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "uvicorn>=0.30,<1",
+  "pydantic>=2.7,<3",
+  "openai>=2.7.2,<3",
+  "openenv-core>=0.2.0",
+]
+
+[project.scripts]
+server = "server.app:main"
+
+[tool.setuptools]
+py-modules = ["app", "inference"]
+
+[tool.setuptools.packages.find]
+include = ["agent", "env", "server"]

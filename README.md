@@ -1,127 +1,264 @@
+---
+title: OpenENV Support Triage
+emoji: "🎫"
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_file: server/app.py
+pinned: false
+tags:
+  - openenv
+  - reinforcement-learning
+  - support-triage
+  - fastapi
+---
+
 # Support Triage OpenEnv
 
-A deterministic support-ticket triage benchmark for evaluating routing, prioritization, and action selection.
+A deterministic customer-support ticket triage benchmark for evaluating agents on three decisions at once: routing, priority assignment, and next-action selection. The project follows an OpenEnv-style setup and includes a FastAPI app, local runners, scenario files, and a baseline policy.
 
-## What The Agent Does
+## What This Project Simulates
 
-For one chosen ticket, the agent predicts:
+Support teams need to decide, for every incoming ticket:
 
-- `department`: `billing`, `technical`, or `general`
-- `priority`: `low`, `medium`, or `high`
-- `action_type`: `resolve`, `escalate`, or `request_info`
+1. Which department should handle it.
+2. How urgent it is.
+3. What action should happen next.
 
-The environment scores both correctness and queue management under time pressure.
+This environment turns that workflow into a reproducible benchmark with hidden labels, realistic ticket text, staged arrivals, and SLA pressure.
 
-## Scenario Overview
+## Action and Observation Format
 
-- `easy`: `10` tickets, no arrivals, forgiving step budget
-- `medium`: `15` total tickets, staged arrivals, moderate pressure
-- `hard`: `25` total tickets, continuous arrivals, fewer steps than tickets
+Each step expects an action like this:
 
-Task files:
+```json
+{
+  "ticket_id": "E006",
+  "department": "billing",
+  "priority": "high",
+  "action_type": "escalate"
+}
+```
 
-- [easy.json](G:\TraingingLLM\tasks\easy.json)
-- [medium.json](G:\TraingingLLM\tasks\medium.json)
-- [hard.json](G:\TraingingLLM\tasks\hard.json)
+The environment returns an observation shaped like this:
 
-## Observation
+```json
+{
+  "current_ticket": {
+    "id": "E006",
+    "category_hint": "technical",
+    "specialist_team": "account_access",
+    "description": "Users cannot log in and the account appears suspended.",
+    "urgency": 5,
+    "customer_tier": "premium",
+    "time_waiting": 85
+  },
+  "pending_tickets": [],
+  "pending_count": 9,
+  "resolved_count": 1,
+  "current_time": 2,
+  "step_number": 2,
+  "resolved_tickets": []
+}
+```
 
-Each visible ticket includes:
+Ground-truth labels are kept hidden from the acting agent.
 
-- `id`
-- `category_hint`
-- `description`
-- `urgency` from `1` to `5`
-- `customer_tier`: `free` or `premium`
-- `time_waiting`
+## Available Scenarios
 
-The environment also returns:
+The repo currently exposes the canonical scenarios discovered from `tasks/*.json`:
 
-- `current_ticket`
-- `pending_tickets`
-- `pending_count`
-- `resolved_count`
-- `current_time`
-- `step_number`
+| Scenario | Tickets | Arrival Pattern | Default Max Steps |
+|---|---:|---|---:|
+| `easy` | 10 | No new arrivals | 12 |
+| `medium` | 15 | Two staged waves | 16 |
+| `hard` | 25 | Continuous arrivals | 22 |
 
-Ground truth stays hidden from the agent during play.
+Difficulty increases through more ambiguous ticket language, more interruptions, and stronger SLA pressure.
 
 ## Scoring
 
-Step reward:
+### Step reward
 
-- correct department: `+0.2`
-- correct priority: `+0.15`
-- correct action: `+0.1`
-- wrong department: `-0.3`
-- ignoring an urgent ticket: `-0.5`
-- delay penalty: `-0.05 * current_time`
+| Event | Score |
+|---|---:|
+| Correct department | `+0.20` |
+| Correct priority | `+0.15` |
+| Correct action | `+0.10` |
+| Wrong department | `-0.30` |
+| Skip urgent ticket (`urgency >= 4`) | `-0.50` |
+| Time delay penalty | `-0.05 * current_time` |
 
-Final score:
+### Final grade
 
 ```text
-0.35 * routing_accuracy +
-0.25 * priority_accuracy +
-0.25 * sla_score +
-0.15 * action_accuracy
+final_score = 0.35 * routing_accuracy
+            + 0.25 * priority_accuracy
+            + 0.25 * sla_score
+            + 0.15 * action_accuracy
 ```
 
-## Quick Start
+High-priority tickets are expected to be handled within 3 steps of appearing.
 
-Windows PowerShell:
+## API Endpoints
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+Base URL when running locally with Uvicorn: `http://localhost:8000`
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/` | Root metadata, routes, and scenario list |
+| `GET` | `/health` | Health check |
+| `GET` | `/tasks` | List available scenarios |
+| `GET` | `/reset` | Create a session using query parameters |
+| `POST` | `/reset` | Create a session using a JSON body |
+| `GET` | `/state/{session_id}` | Fetch the current observation |
+| `POST` | `/step/{session_id}` | Submit one action |
+| `GET` | `/grade/{session_id}` | Get the final grade summary |
+| `DELETE` | `/session/{session_id}` | Delete an in-memory session |
+
+## Live Deployment
+
+Public deployed API URL:
+
+- `https://tensura81-openenv.hf.space`
+
+## Local Setup
+
+### Requirements
+
+- Python 3.10+
+- `pip`
+
+### Install dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-Run tests:
+### Run the API locally
 
-```powershell
-python -m unittest discover -s tests -v
+```bash
+uvicorn server.app:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-Run the local CLI:
+### Run the local smoke runner
 
-```powershell
-python app.py
+```bash
+python app.py easy
 python app.py medium
 python app.py hard
 ```
 
-Run the heuristic benchmark:
+## Inference Runner
 
-```powershell
+`inference.py` can run either:
+
+- the built-in heuristic baseline
+- an OpenAI-compatible chat-completions model
+
+### Heuristic-only mode
+
+```bash
 python inference.py --heuristic-only
+python inference.py --scenario medium --heuristic-only
 ```
 
-Run the API:
+### OpenAI-compatible mode
+
+Required environment variables for hackathon evaluation:
+
+- `HF_TOKEN`
+- `API_BASE_URL`
+- `MODEL_NAME`
+
+PowerShell:
 
 ```powershell
-uvicorn app:app --host 0.0.0.0 --port 8000
+$env:HF_TOKEN="your_api_key"
+$env:MODEL_NAME="meta-llama/Llama-3.3-70B-Instruct"
+$env:API_BASE_URL="https://router.huggingface.co/v1"
 ```
 
-Useful endpoints:
+Bash:
 
-- `GET /health`
-- `GET /tasks`
-- `POST /reset`
-- `GET /state/{session_id}`
-- `POST /step/{session_id}`
-- `GET /grade/{session_id}`
+```bash
+export HF_TOKEN=your_api_key
+export MODEL_NAME=meta-llama/Llama-3.3-70B-Instruct
+export API_BASE_URL=https://router.huggingface.co/v1
+```
 
-## Current Heuristic Scores
+Then run:
 
-- `easy`: `0.9375`
-- `medium`: `0.89`
-- `hard`: `0.7758`
+```bash
+python inference.py
+python inference.py --scenario hard
+```
 
-## Repo Layout
+The script emits structured stdout logs in `[START]`, `[STEP]`, and `[END]` format for each scenario. If credentials are missing or the model response is malformed, it falls back to the heuristic policy instead of exiting with an error.
 
-- [app.py](G:\TraingingLLM\app.py): FastAPI app and local CLI entrypoint
-- [inference.py](G:\TraingingLLM\inference.py): heuristic and model runner
-- [agent/baseline.py](G:\TraingingLLM\agent\baseline.py): baseline policy
-- [env/core.py](G:\TraingingLLM\env\core.py): environment step/reset logic
-- [env/grader.py](G:\TraingingLLM\env\grader.py): final grading
-- [tasks/README.md](G:\TraingingLLM\tasks\README.md): task format and classification guide
+## Docker
+
+Build and run the container with:
+
+```bash
+docker build -t support-triage-env .
+docker run -p 7860:7860 support-triage-env
+```
+
+The Docker image serves the app on `http://localhost:7860`.
+
+## Test Location
+
+Relative to the Git repository root:
+
+- `tests/`
+- `tests/test_deployed.py`
+
+## Project Structure
+
+```text
+.
+|-- app.py
+|-- inference.py
+|-- openenv.yaml
+|-- Dockerfile
+|-- requirements.txt
+|-- pyproject.toml
+|-- uv.lock
+|-- agent/
+|   |-- __init__.py
+|   `-- baseline.py
+|-- env/
+|   |-- core.py
+|   |-- environment.py
+|   |-- grader.py
+|   |-- models.py
+|   |-- tasks.py
+|   `-- tickets.py
+|-- server/
+|   |-- __init__.py
+|   `-- app.py
+|-- tasks/
+|   |-- easy.json
+|   |-- medium.json
+|   `-- hard.json
+|-- tests/
+|   |-- test_api.py
+|   |-- test_deployed.py
+|   |-- test_environment.py
+|   |-- test_grader.py
+|   |-- test_inference.py
+|   `-- test_tasks.py
+```
+```
+
+## Notes
+
+- Sessions are stored in memory, so restarting the server clears active runs.
+- `openenv.yaml` declares the app entrypoint as `server.app:app` on port `7860`.
+- The Dockerfile starts Uvicorn on port `7860`.
+- The repo currently depends on FastAPI, Pydantic, Uvicorn, the OpenAI Python client, and `openenv-core`.
+
+## Attribution
+
+Built for the Meta PyTorch OpenEnv Hackathon by Team Tensura.

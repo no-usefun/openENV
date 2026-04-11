@@ -270,7 +270,7 @@ def _ticket_rank(
     ticket: Ticket,
     action: Action,
     constrained_mode: bool = False,
-) -> tuple[int, int, int, int, str]:
+) -> tuple[int, int, int, int, int, str]:
     seen_age = current_time - seen_at
     confidence = _prediction_confidence(ticket, action)
 

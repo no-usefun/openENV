@@ -50,3 +50,17 @@ Thumbs.db
 
 # Local runtime artifacts
 scenerio.json
+
+
+# temp files
+tmp*/
+temp*/
+*.tmp
+
+# python cache
+__pycache__/
+*.pyc
+
+# virtual env
+.venv/
+venv/
