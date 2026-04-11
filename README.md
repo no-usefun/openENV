@@ -1,6 +1,6 @@
 ---
 title: OpenENV Support Triage
-emoji: "ticket"
+emoji: "🎫"
 colorFrom: blue
 colorTo: indigo
 sdk: docker
