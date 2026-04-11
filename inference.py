@@ -15,9 +15,10 @@ except ImportError:  # pragma: no cover
     OpenAI = None
 
 
-API_KEY = os.getenv("HF_TOKEN") or os.getenv("OPENAI_API_KEY") or os.getenv("API_KEY")
+HF_TOKEN = os.getenv("HF_TOKEN")
 API_BASE_URL = os.getenv("API_BASE_URL") or "https://router.huggingface.co/v1"
 MODEL_NAME = os.getenv("MODEL_NAME") or "meta-llama/Llama-3.3-70B-Instruct"
+LOCAL_IMAGE_NAME = os.getenv("LOCAL_IMAGE_NAME")
 BENCHMARK = os.getenv("OPENENV_BENCHMARK") or "support-triage-env"
 SUCCESS_SCORE_THRESHOLD = 0.1
 
@@ -58,9 +59,9 @@ def log_end(success: bool, steps: int, score: float, rewards: List[float]) -> No
 def build_client() -> Tuple[Any, str]:
     if OpenAI is None:
         raise RuntimeError("The openai package is not installed.")
-    if not API_KEY:
-        raise RuntimeError("HF_TOKEN or OPENAI_API_KEY is not set.")
-    return OpenAI(api_key=API_KEY, base_url=API_BASE_URL), MODEL_NAME
+    if not HF_TOKEN:
+        raise RuntimeError("HF_TOKEN is not set.")
+    return OpenAI(api_key=HF_TOKEN, base_url=API_BASE_URL), MODEL_NAME
 
 
 def build_observation_payload(observation: Observation) -> Dict[str, Any]:
